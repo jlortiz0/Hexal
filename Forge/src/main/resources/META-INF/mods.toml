@@ -31,7 +31,7 @@ side = "BOTH"
 [[dependencies.hexal]]
 modId = "paucal"
 mandatory = true
-versionRange = "[0.5.0,0.6.0)"
+versionRange = "[0.5.0,0.7.0)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -45,7 +45,7 @@ side = "BOTH"
 [[dependencies.hexal]]
 modId = "hexcasting"
 mandatory = true
-versionRange = "[0.10.3]"
+versionRange = "[0.11.0]"
 ordering = "NONE"
 side = "BOTH"
 
