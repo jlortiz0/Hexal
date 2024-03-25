@@ -3,7 +3,7 @@ package ram.talia.hexal.common.casting.actions.spells.link
 import at.petrak.hexcasting.api.casting.ParticleSpray
 import at.petrak.hexcasting.api.casting.RenderedSpell
 import at.petrak.hexcasting.api.casting.SpellAction
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.getPositiveIntUnder
 import at.petrak.hexcasting.api.casting.iota.Iota
 import ram.talia.hexal.api.getBaseCastingWisp
@@ -14,7 +14,7 @@ import ram.talia.hexal.common.entities.BaseCastingWisp
 class OpTransferAllowedOthers(val setAllowed: Boolean) : SpellAction {
     override val argc = 2
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
         val wispThis = args.getBaseCastingWisp(0, argc)
 
         ctx.assertEntityInRange(wispThis)
@@ -33,7 +33,7 @@ class OpTransferAllowedOthers(val setAllowed: Boolean) : SpellAction {
     }
 
     private data class Spell(val wispThis: BaseCastingWisp, val other: ILinkable, val setAllowed: Boolean) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
+        override fun cast(ctx: CastingEnvironment) {
             if (setAllowed) {
                 wispThis.removeFromBlackListTransferMedia(other)
                 wispThis.addToWhiteListTransferMedia(other)

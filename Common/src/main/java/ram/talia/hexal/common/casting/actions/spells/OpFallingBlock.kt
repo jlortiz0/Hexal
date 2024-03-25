@@ -2,7 +2,7 @@ package ram.talia.hexal.common.casting.actions.spells
 
 import at.petrak.hexcasting.api.mod.HexConfig
 import at.petrak.hexcasting.api.casting.*
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.core.BlockPos
@@ -27,7 +27,7 @@ import kotlin.math.min
 object OpFallingBlock : SpellAction {
 	override val argc = 1
 
-	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+	override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		val pos = args.getVec3(0, argc)
 		ctx.assertVecInRange(pos)
 
@@ -40,7 +40,7 @@ object OpFallingBlock : SpellAction {
 	}
 
 	private data class Spell(val v: Vec3) : RenderedSpell {
-		override fun cast(ctx: CastingContext) {
+		override fun cast(ctx: CastingEnvironment) {
 			val pos = BlockPos(v)
 
 			val blockstate = ctx.world.getBlockState(pos)

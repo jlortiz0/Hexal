@@ -5,7 +5,7 @@ package ram.talia.hexal.common.casting.actions.spells.great
 import at.petrak.hexcasting.api.casting.ParticleSpray
 import at.petrak.hexcasting.api.casting.RenderedSpell
 import at.petrak.hexcasting.api.casting.SpellAction
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.getBlockPos
 import at.petrak.hexcasting.api.casting.iota.Iota
 import net.minecraft.core.BlockPos
@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment
 
 /**
  * Tick Acceleration!
@@ -27,9 +27,9 @@ object OpTick : SpellAction {
         return HexalConfig.server.tickConstantCost + HexalConfig.server.tickCostPerTicked * timesTicked
     }
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
         val pos = args.getBlockPos(0, argc)
-        val ictx = ctx as IMixinCastingContext
+        val ictx = ctx as IMixinCastingEnvironment
 
         ctx.assertVecInRange(pos)
 
@@ -43,8 +43,8 @@ object OpTick : SpellAction {
     }
 
     private data class Spell(val pos: BlockPos) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
-            val ictx = ctx as IMixinCastingContext
+        override fun cast(ctx: CastingEnvironment) {
+            val ictx = ctx as IMixinCastingEnvironment
             ictx.incTimesTicked(pos)
 
             // https://github.com/haoict/time-in-a-bottle/blob/1.19/src/main/java/com/haoict/tiab/entities/TimeAcceleratorEntity.java

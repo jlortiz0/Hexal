@@ -1,6 +1,6 @@
 package ram.talia.hexal.api.linkable
 
-import at.petrak.hexcasting.api.casting.Action
+import at.petrak.hexcasting.api.casting.castables.Action
 import at.petrak.hexcasting.api.casting.iota.EntityIota
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerPlayer

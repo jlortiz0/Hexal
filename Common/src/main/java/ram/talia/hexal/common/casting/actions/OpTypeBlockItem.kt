@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.casting.actions
 
 import at.petrak.hexcasting.api.casting.*
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.EntityIota
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.Vec3Iota
@@ -15,7 +15,7 @@ import ram.talia.hexal.api.spell.iota.MoteIota
 object OpTypeBlockItem : ConstMediaAction {
     override val argc = 1
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
         // get anything that's convertable to an item, and return its type.
         return when (val arg = args[0]) {
             is Vec3Iota -> {

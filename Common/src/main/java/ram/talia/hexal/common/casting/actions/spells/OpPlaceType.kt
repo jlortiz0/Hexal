@@ -4,7 +4,7 @@ import at.petrak.hexcasting.api.misc.DiscoveryHandlers
 import at.petrak.hexcasting.api.casting.ParticleSpray
 import at.petrak.hexcasting.api.casting.RenderedSpell
 import at.petrak.hexcasting.api.casting.SpellAction
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.getBlockPos
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.MishapBadBlock
@@ -31,7 +31,7 @@ import java.util.function.Predicate
 object OpPlaceType : SpellAction {
     override val argc = 2
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
         val block = args.getBlockTypeOrBlockItem(0, argc) ?:
             throw MishapInvalidIota.ofType(args[0], 1, "type.block.able")
         val pos = args.getBlockPos(1, argc)
@@ -57,7 +57,7 @@ object OpPlaceType : SpellAction {
     }
 
     private data class Spell(val pos: BlockPos, val blockOrMoteIota: Either<Block, MoteIota>) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
+        override fun cast(ctx: CastingEnvironment) {
             if (!ctx.canEditBlockAt(pos))
                 return
 
@@ -122,7 +122,7 @@ object OpPlaceType : SpellAction {
             }
         }
 
-        fun getItemSlot(ctx: CastingContext, stackOK: Predicate<ItemStack>): ItemStack? {
+        fun getItemSlot(ctx: CastingEnvironment, stackOK: Predicate<ItemStack>): ItemStack? {
             val items = DiscoveryHandlers.collectItemSlots(ctx)
 
             for (stack in items) {

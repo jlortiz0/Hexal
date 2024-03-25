@@ -3,7 +3,7 @@ package ram.talia.hexal.common.casting.actions.spells
 import at.petrak.hexcasting.api.casting.ParticleSpray
 import at.petrak.hexcasting.api.casting.RenderedSpell
 import at.petrak.hexcasting.api.casting.SpellAction
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import com.mojang.datafixers.util.Either
 import net.minecraft.world.phys.Vec3
@@ -16,7 +16,7 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 object OpParticles : SpellAction {
     override val argc = 1
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
         val loc = args.getVec3OrListVec3(0, argc)
 
         // assert all locs in ambit.
@@ -30,7 +30,7 @@ object OpParticles : SpellAction {
     }
 
     data class Spell(val loc: Either<Vec3, List<Vec3>>) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
+        override fun cast(ctx: CastingEnvironment) {
             val colouriser = at.petrak.hexcasting.xplat.IXplatAbstractions.INSTANCE.getColorizer(ctx.caster)
 
             loc.map({

@@ -1,14 +1,17 @@
 package ram.talia.hexal.api.spell
 
-import at.petrak.hexcasting.api.casting.Action
-import at.petrak.hexcasting.api.casting.OperationResult
+import at.petrak.hexcasting.api.HexAPI
+import at.petrak.hexcasting.api.casting.castables.Action
 import at.petrak.hexcasting.api.casting.ParticleSpray
 import at.petrak.hexcasting.api.casting.RenderedSpell
-import at.petrak.hexcasting.api.casting.casting.CastingContext
-import at.petrak.hexcasting.api.casting.casting.eval.SpellContinuation
-import at.petrak.hexcasting.api.casting.casting.sideeffects.OperatorSideEffect
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.eval.OperationResult
+import at.petrak.hexcasting.api.casting.eval.sideeffects.OperatorSideEffect
+import at.petrak.hexcasting.api.casting.eval.vm.CastingImage
+import at.petrak.hexcasting.api.casting.eval.vm.SpellContinuation
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.MishapNotEnoughArgs
+import at.petrak.hexcasting.common.lib.hex.HexEvalSounds
 
 /**
  * An action that has some affect on the world, and takes a variable number of arguments depending on what's on the stack.
@@ -22,28 +25,28 @@ interface VarargSpellAction : Action {
      */
     fun argc(stack: List<Iota>): Int
 
-    fun hasCastingSound(ctx: CastingContext): Boolean = true
+    fun hasCastingSound(ctx: CastingEnvironment): Boolean = true
 
-    fun awardsCastingStat(ctx: CastingContext): Boolean = true
+    fun awardsCastingStat(ctx: CastingEnvironment): Boolean = true
 
     fun execute(
             args: List<Iota>,
             argc: Int,
-            ctx: CastingContext
+            ctx: CastingEnvironment
     ): Triple<RenderedSpell, Int, List<ParticleSpray>>?
 
     override fun operate(
-            continuation: SpellContinuation,
-            stack: MutableList<Iota>,
-            ravenmind: Iota?,
-            ctx: CastingContext
+        env: CastingEnvironment,
+        image: CastingImage,
+        continuation: SpellContinuation
     ): OperationResult {
+        val stack = image.stack.toMutableList()
         val argc = this.argc(stack.reversed())
         if (argc > stack.size)
             throw MishapNotEnoughArgs(argc, stack.size)
         val args = stack.takeLast(argc)
         for (_i in 0 until argc) stack.removeLast()
-        val executeResult = this.execute(args, argc, ctx) ?: return OperationResult(continuation, stack, ravenmind, listOf())
+        val executeResult = this.execute(args, argc, env) ?: return OperationResult(image, listOf(), continuation, HexEvalSounds.MUTE)
         val (spell, media, particles) = executeResult
 
         val sideEffects = mutableListOf<OperatorSideEffect>()
@@ -52,18 +55,20 @@ interface VarargSpellAction : Action {
             sideEffects.add(OperatorSideEffect.ConsumeMedia(media))
 
         // Don't have an effect if the caster isn't enlightened, even if processing other side effects
-        if (!isGreat || ctx.isCasterEnlightened)
+        //if (!isGreat || env.isCasterEnlightened)
             sideEffects.add(
                 OperatorSideEffect.AttemptSpell(
                     spell,
-                    this.hasCastingSound(ctx),
-                    this.awardsCastingStat(ctx)
+                    this.hasCastingSound(env),
+                    this.awardsCastingStat(env)
                 )
             )
 
         for (spray in particles)
             sideEffects.add(OperatorSideEffect.Particles(spray))
 
-        return OperationResult(continuation, stack, ravenmind, sideEffects)
+        val image2 = image.copy(stack = stack, opsConsumed = image.opsConsumed + 1)
+        val sound = if (this.hasCastingSound(env)) HexEvalSounds.SPELL else HexEvalSounds.MUTE
+        return OperationResult(image2, sideEffects, continuation, sound)
     }
 }

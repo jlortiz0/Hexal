@@ -1,6 +1,6 @@
 package ram.talia.hexal.common.casting.actions.spells.gates
 
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.getEntity
 import at.petrak.hexcasting.api.casting.getVec3
 import at.petrak.hexcasting.api.casting.iota.EntityIota
@@ -24,7 +24,7 @@ object OpMakeGate : VarargConstMediaAction {
     override val mediaCost: Int
         get() = HexalConfig.server.makeGateCost
 
-    override fun execute(args: List<Iota>, argc: Int, ctx: CastingContext): List<Iota> {
+    override fun execute(args: List<Iota>, argc: Int, ctx: CastingEnvironment): List<Iota> {
         // if OpMakeGate receives a null, then it'll make a drifting gate that costs proportional to distance but can teleport anywhere in ambit.
         // if it receives a vec and no entity, all teleports will go to the position pointed to by that vec.
         // if it receives a vec and an entity, all teleports will go to that entity, offset by that vec.

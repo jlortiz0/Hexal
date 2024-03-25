@@ -1,6 +1,6 @@
 package ram.talia.hexal.api.spell.casting
 
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.casting.CastingHarness
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.NullIota
@@ -117,17 +117,17 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 	 */
 	@Suppress("CAST_NEVER_SUCCEEDS")
 	fun cast(cast: WispCast): WispCastResult {
-		val ctx = CastingContext(
+		val ctx = CastingEnvironment(
 			caster!!,
 			InteractionHand.MAIN_HAND,
-			CastingContext.CastSource.PACKAGED_HEX
+			CastingEnvironment.CastSource.PACKAGED_HEX
 		)
 
 		val wisp = cast.wisp!!
 		wisp.summonedChildThisCast = false // restricts the wisp to only summoning one other wisp per cast.
 
-		// IntelliJ is complaining that ctx will never be an instance of IMixinCastingContext cause it doesn't know about mixin, but we know better
-		val mCast = ctx as? IMixinCastingContext
+		// IntelliJ is complaining that ctx will never be an instance of IMixinCastingEnvironment cause it doesn't know about mixin, but we know better
+		val mCast = ctx as? IMixinCastingEnvironment
 		mCast?.wisp = wisp
 
 		val harness = CastingHarness(ctx)

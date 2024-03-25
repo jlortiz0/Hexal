@@ -1,10 +1,10 @@
 package ram.talia.hexal.common.casting.actions.spells.wisp
 
 import at.petrak.hexcasting.api.casting.*
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import ram.talia.hexal.api.config.HexalConfig
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment
 import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
 import ram.talia.hexal.common.entities.TickingWisp
 import kotlin.math.ln
@@ -14,11 +14,11 @@ object OpMoveSpeedSet : SpellAction {
     override val argc = 1
 
     @Suppress("CAST_NEVER_SUCCEEDS")
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
         val newMax = args.getPositiveDouble(0, OpMoveTargetSet.argc)
         val newMult = newMax / TickingWisp.BASE_MAX_SPEED_PER_TICK
 
-        val mCast = ctx as? IMixinCastingContext
+        val mCast = ctx as? IMixinCastingEnvironment
 
         if (mCast == null || !mCast.hasWisp() || mCast.wisp !is TickingWisp)
             throw MishapNoWisp()
@@ -42,7 +42,7 @@ object OpMoveSpeedSet : SpellAction {
     }
 
     private data class Spell(val wisp: TickingWisp, val newMult: Double) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
+        override fun cast(ctx: CastingEnvironment) {
             wisp.currentMoveMultiplier = newMult.toFloat()
         }
     }

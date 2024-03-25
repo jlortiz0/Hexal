@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.casting.actions.everbook
 
 import at.petrak.hexcasting.api.casting.*
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.NullIota
 import at.petrak.hexcasting.api.casting.mishaps.MishapNoAkashicRecord
@@ -18,7 +18,7 @@ object OpEverbookWrite : ConstMediaAction {
 	override val alwaysProcessGreatSpell = false
 	override val causesBlindDiversion = false
 
-	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+	override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
 		val pos = args.getBlockPos(0, argc)
 		val key = args.getPattern(1, argc)
 

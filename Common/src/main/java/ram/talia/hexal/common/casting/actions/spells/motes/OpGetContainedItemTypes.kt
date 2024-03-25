@@ -2,20 +2,20 @@
 
 package ram.talia.hexal.common.casting.actions.spells.motes
 
-import at.petrak.hexcasting.api.casting.ConstMediaAction
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.asActionResult
 import ram.talia.hexal.api.asActionResult
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
 
 object OpGetContainedItemTypes : ConstMediaAction {
     override val argc = 0
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
-        val storage = (ctx as IMixinCastingContext).boundStorage ?: return null.asActionResult
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
+        val storage = (ctx as IMixinCastingEnvironment).boundStorage ?: return null.asActionResult
         if (!MediafiedItemManager.isStorageLoaded(storage))
             throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
 

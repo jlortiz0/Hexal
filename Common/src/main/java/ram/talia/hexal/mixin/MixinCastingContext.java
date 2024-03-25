@@ -1,7 +1,7 @@
 package ram.talia.hexal.mixin;
 
 import at.petrak.hexcasting.api.mod.HexConfig;
-import at.petrak.hexcasting.api.casting.casting.CastingContext;
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager;
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
+import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 
 import java.util.HashMap;
@@ -22,11 +22,11 @@ import java.util.UUID;
 import static java.lang.Math.max;
 
 /**
- * Modifies {@link at.petrak.hexcasting.api.casting.casting.CastingContext} to make it properly allow wisps to affect things within their range.
+ * Modifies {@link at.petrak.hexcasting.api.casting.eval.CastingEnvironment} to make it properly allow wisps to affect things within their range.
  */
-@Mixin(CastingContext.class)
-public abstract class MixinCastingContext implements IMixinCastingContext {
-	private final CastingContext self = (CastingContext) (Object) this;
+@Mixin(CastingEnvironment.class)
+public abstract class MixinCastingEnvironment implements IMixinCastingEnvironment {
+	private final CastingEnvironment self = (CastingEnvironment) (Object) this;
 
 	private BaseCastingWisp wisp;
 
@@ -83,14 +83,14 @@ public abstract class MixinCastingContext implements IMixinCastingContext {
 	}
 	
 	/**
-	 * Returns the remaining evals the context can perform (mixin used since {@link at.petrak.hexcasting.api.casting.casting.CastingContext}.depth is private)
+	 * Returns the remaining evals the context can perform (mixin used since {@link at.petrak.hexcasting.api.casting.eval.CastingEnvironment}.depth is private)
 	 */
 	public int remainingDepth () {
 		return HexConfig.server().maxRecurseDepth() - this.depth;
 	}
 	
 	/**
-	 * Modifies {@link at.petrak.hexcasting.api.casting.casting.CastingContext} to make it properly allow wisps to affect things within their range. The INVOKE location and
+	 * Modifies {@link at.petrak.hexcasting.api.casting.eval.CastingEnvironment} to make it properly allow wisps to affect things within their range. The INVOKE location and
 	 * use of cancellable mean the wisp can affect things in range of the player's greater sentinel, but can't affect things in range of the player.
 	 */
 	@Inject(method = "isVecInRange", at = @At(value = "RETURN", ordinal = 3), cancellable = true,

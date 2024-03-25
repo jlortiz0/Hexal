@@ -1,10 +1,10 @@
 package ram.talia.hexal.common.casting.actions
 
 import at.petrak.hexcasting.api.misc.MediaConstants
-import at.petrak.hexcasting.api.casting.Action
-import at.petrak.hexcasting.api.casting.ConstMediaAction
+import at.petrak.hexcasting.api.casting.castables.Action
+import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
 import at.petrak.hexcasting.api.casting.asActionResult
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.getVec3
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.NullIota
@@ -17,7 +17,7 @@ object OpEntityRaycastDyn : ConstMediaAction {
     override val argc = 2
     override val mediaCost = MediaConstants.DUST_UNIT / 100
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
         val type = args.getEntityTypeOrItemType(0, argc)
         val origin = args.getVec3(1, argc)
         val look = args.getVec3(2, argc)

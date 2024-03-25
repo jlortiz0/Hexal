@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import ram.talia.hexal.api.HexalAPI;
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
+import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 
 @Mixin(OperatorSideEffect.ConsumeMedia.class)
@@ -24,7 +24,7 @@ public abstract class MixinOperatorSideEffectConsumeMana {
 					cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION, remap = false
 	)
 	private void performEffectWisp (CastingHarness harness, CallbackInfoReturnable<Boolean> cir, boolean overcastOk, int leftoverMana) {
-		IMixinCastingContext ctxi = (IMixinCastingContext)(Object) harness.getCtx();
+		IMixinCastingEnvironment ctxi = (IMixinCastingEnvironment)(Object) harness.getCtx();
 		
 		HexalAPI.LOGGER.debug("performEffectWisp called");
 		

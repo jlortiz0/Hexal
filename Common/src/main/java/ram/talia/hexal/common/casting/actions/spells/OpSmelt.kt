@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.casting.actions.spells
 
 import at.petrak.hexcasting.api.casting.*
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import net.minecraft.core.BlockPos
 import net.minecraft.world.SimpleContainer
@@ -28,7 +28,7 @@ object OpSmelt : SpellAction {
         return toSmelt.flatMap({ 1 }, { item -> item.item.count }, { item -> item.count.toIntCapped() })
     }
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
         val toSmelt = args.getBlockPosOrItemEntityOrItem(0, argc) ?: return null
 
         val pos = toSmelt.flatMap({ blockPos -> Vec3.atCenterOf(blockPos) }, { item -> item.position() }, { null })
@@ -47,7 +47,7 @@ object OpSmelt : SpellAction {
     }
 
     private data class Spell(val vOrIeOrI: Anyone<BlockPos, ItemEntity, MoteIota>) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
+        override fun cast(ctx: CastingEnvironment) {
             vOrIeOrI.map({ pos -> // runs this code if the player passed a BlockPos
                  if (!ctx.canEditBlockAt(pos)) return@map
                 val blockState = ctx.world.getBlockState(pos)
@@ -84,7 +84,7 @@ object OpSmelt : SpellAction {
             })
         }
 
-        fun smeltResult(item: Item, ctx: CastingContext): ItemStack? {
+        fun smeltResult(item: Item, ctx: CastingEnvironment): ItemStack? {
             val optional: Optional<SmeltingRecipe> = ctx.world.recipeManager.getRecipeFor(
                     RecipeType.SMELTING, SimpleContainer(ItemStack(item, 1)),
                     ctx.world

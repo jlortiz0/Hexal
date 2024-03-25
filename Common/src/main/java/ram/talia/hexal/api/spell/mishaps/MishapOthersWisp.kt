@@ -1,7 +1,7 @@
 package ram.talia.hexal.api.spell.mishaps
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.Mishap
 import net.minecraft.network.chat.Component
@@ -11,11 +11,11 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.DyeColor
 
 class MishapOthersWisp(val other: Player?) : Mishap() {
-	override fun accentColor(ctx: CastingContext, errorCtx: Context): FrozenColorizer = dyeColor(DyeColor.BLACK)
+	override fun accentColor(ctx: CastingEnvironment, errorCtx: Context): FrozenColorizer = dyeColor(DyeColor.BLACK)
 
-	override fun errorMessage(ctx: CastingContext, errorCtx: Context): Component = error("others_wisp", other?.name ?: "Unowned")
+	override fun errorMessage(ctx: CastingEnvironment, errorCtx: Context): Component = error("others_wisp", other?.name ?: "Unowned")
 
-	override fun execute(ctx: CastingContext, errorCtx: Context, stack: MutableList<Iota>) {
+	override fun execute(ctx: CastingEnvironment, errorCtx: Context, stack: MutableList<Iota>) {
 		ctx.caster.addEffect(MobEffectInstance(MobEffects.BLINDNESS, 20 * 60))
 	}
 }

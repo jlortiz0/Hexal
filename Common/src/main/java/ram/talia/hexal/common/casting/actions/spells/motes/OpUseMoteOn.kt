@@ -2,7 +2,7 @@ package ram.talia.hexal.common.casting.actions.spells.motes
 
 import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.casting.*
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.EntityIota
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
@@ -31,7 +31,7 @@ object OpUseMoteOn : VarargSpellAction {
     override fun execute(
             args: List<Iota>,
             argc: Int,
-            ctx: CastingContext
+            ctx: CastingEnvironment
     ): Triple<RenderedSpell, Int, List<ParticleSpray>> {
         val item = args.getMote(0, argc)
 
@@ -72,7 +72,7 @@ object OpUseMoteOn : VarargSpellAction {
     }
 
     private data class EntityTargetSpell(val entity: Entity, val item: MoteIota) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
+        override fun cast(ctx: CastingEnvironment) {
             if (!ctx.isEntityInRange(entity))
                 return
 
@@ -95,7 +95,7 @@ object OpUseMoteOn : VarargSpellAction {
     }
 
     private data class BlockTargetSpell(val pos: BlockPos, val direction: Vec3, val item: MoteIota) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
+        override fun cast(ctx: CastingEnvironment) {
             if (!ctx.canEditBlockAt(pos))
                 return
 

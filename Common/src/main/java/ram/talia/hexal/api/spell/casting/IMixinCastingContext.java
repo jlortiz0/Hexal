@@ -6,7 +6,7 @@ import ram.talia.hexal.common.entities.BaseCastingWisp;
 
 import java.util.UUID;
 
-public interface IMixinCastingContext {
+public interface IMixinCastingEnvironment {
 	@Nullable BaseCastingWisp getWisp();
 	@Nullable BaseCastingWisp setWisp(@Nullable BaseCastingWisp wisp);
 	

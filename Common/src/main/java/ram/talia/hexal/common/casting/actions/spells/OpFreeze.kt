@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.casting.actions.spells
 
 import at.petrak.hexcasting.api.casting.*
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.core.BlockPos
@@ -16,7 +16,7 @@ import ram.talia.hexal.common.recipe.HexalRecipeTypes
 object OpFreeze : SpellAction {
 	override val argc = 1
 
-	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+	override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		val toFreeze = Vec3.atCenterOf(BlockPos(args.getVec3(0, argc)))
 
 		ctx.assertVecInRange(toFreeze)
@@ -29,7 +29,7 @@ object OpFreeze : SpellAction {
 	}
 
 	private data class Spell(val vec: Vec3) : RenderedSpell {
-		override fun cast(ctx: CastingContext) {
+		override fun cast(ctx: CastingEnvironment) {
 			val pos = BlockPos(vec)
 			val blockState = ctx.world.getBlockState(pos)
 			val fluidState = ctx.world.getFluidState(pos)

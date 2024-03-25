@@ -280,7 +280,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 	abstract fun move()
 
 	/**
-	 * Called in [ram.talia.hexal.mixin.MixinCastingContext.isVecInRangeWisp] to determine the
+	 * Called in [ram.talia.hexal.mixin.MixinCastingEnvironment.isVecInRangeWisp] to determine the
 	 * maximum range the wisp should be able to affect and make them able to affect things inside that range.
 	 */
 	abstract fun maxSqrCastingDistance(): Double

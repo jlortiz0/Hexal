@@ -2,10 +2,10 @@
 
 package ram.talia.hexal.common.casting.actions.spells.motes
 
-import at.petrak.hexcasting.api.casting.ConstMediaAction
+import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
 import at.petrak.hexcasting.api.casting.SpellList
 import at.petrak.hexcasting.api.casting.asActionResult
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.ListIota
 import at.petrak.hexcasting.api.casting.iota.NullIota
@@ -21,7 +21,7 @@ import ram.talia.hexal.api.getMoteOrList
 import ram.talia.hexal.api.mediafieditems.ItemRecord
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.mulBounded
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment
 import ram.talia.hexal.api.spell.iota.MoteIota
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
 
@@ -42,9 +42,9 @@ object OpCraftMote : ConstMediaAction {
         get() = HexalConfig.server.craftItemCost
 
     @Suppress("CAST_NEVER_SUCCEEDS")
-    override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
         val input = args.getMoteOrList(0, argc) ?: return listOf<Iota>().asActionResult
-        val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(ctx.caster.position())
+        val storage = (ctx as IMixinCastingEnvironment).boundStorage ?: throw MishapNoBoundStorage(ctx.caster.position())
         if (!MediafiedItemManager.isStorageLoaded(storage))
             throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
 

@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.casting.actions.spells.motes
 
 import at.petrak.hexcasting.api.casting.*
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.Vec3Iota
 import net.minecraft.world.entity.item.ItemEntity
@@ -25,7 +25,7 @@ object OpReturnMote : VarargSpellAction {
         return 3
     }
 
-    override fun execute(args: List<Iota>, argc: Int, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
+    override fun execute(args: List<Iota>, argc: Int, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
         val item = args.getMote(0, argc) ?: return null
         val pos = args.getVec3(1, argc)
 
@@ -41,7 +41,7 @@ object OpReturnMote : VarargSpellAction {
     }
 
     private data class Spell(val item: MoteIota, val pos: Vec3, val numToReturn: Int?) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
+        override fun cast(ctx: CastingEnvironment) {
             val toDrop = item.getStacksToDrop(numToReturn?.let { min(it, HexalConfig.server.maxItemsReturned) } ?: HexalConfig.server.maxItemsReturned)
 
             for (stack in toDrop) {

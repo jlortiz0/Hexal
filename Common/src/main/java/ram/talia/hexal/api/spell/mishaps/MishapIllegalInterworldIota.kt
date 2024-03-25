@@ -2,7 +2,7 @@ package ram.talia.hexal.api.spell.mishaps
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.casting.asActionResult
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.GarbageIota
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.ListIota
@@ -13,11 +13,11 @@ import ram.talia.hexal.api.spell.iota.GateIota
 import ram.talia.hexal.api.spell.iota.MoteIota
 
 class MishapIllegalInterworldIota(val iota: Iota) : Mishap() {
-    override fun accentColor(ctx: CastingContext, errorCtx: Context): FrozenColorizer = dyeColor(DyeColor.GREEN)
+    override fun accentColor(ctx: CastingEnvironment, errorCtx: Context): FrozenColorizer = dyeColor(DyeColor.GREEN)
 
-    override fun errorMessage(ctx: CastingContext, errorCtx: Context): Component = error("illegal_interworld_iota", iota.display())
+    override fun errorMessage(ctx: CastingEnvironment, errorCtx: Context): Component = error("illegal_interworld_iota", iota.display())
 
-    override fun execute(ctx: CastingContext, errorCtx: Context, stack: MutableList<Iota>) {
+    override fun execute(ctx: CastingEnvironment, errorCtx: Context, stack: MutableList<Iota>) {
         ctx.caster.health /= 2 // Bad but better than freaking TODO()
     }
 

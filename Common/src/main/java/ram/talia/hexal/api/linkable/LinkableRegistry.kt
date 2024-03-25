@@ -1,6 +1,6 @@
 package ram.talia.hexal.api.linkable
 
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
@@ -14,8 +14,8 @@ object LinkableRegistry {
 
 	// TODO: Refactor to use Minecraft Registry class
 	private val linkableTypes: MutableMap<ResourceLocation, LinkableType<*, *>> = mutableMapOf()
-	private val castingContextExtractionQueue: MutableList<LinkableType<*, *>> = mutableListOf()
-//			= PriorityQueue { type0, type1 -> type1.castingContextPriority - type0.castingContextPriority }
+	private val CastingEnvironmentExtractionQueue: MutableList<LinkableType<*, *>> = mutableListOf()
+//			= PriorityQueue { type0, type1 -> type1.CastingEnvironmentPriority - type0.CastingEnvironmentPriority }
 	private val iotaExtractionQueue: MutableList<LinkableType<*, *>> = mutableListOf()
 //			= PriorityQueue { type0, type1 -> type1.iotaPriority - type0.iotaPriority }
 
@@ -34,7 +34,7 @@ object LinkableRegistry {
 			throw RegisterLinkableTypeException("LinkableRegistry already contains resource id ${type.id}")
 
 		if (type.canCast)
-			addSorted(castingContextExtractionQueue, type) { type0, type1 -> type1.castingContextPriority - type0.castingContextPriority }
+			addSorted(CastingEnvironmentExtractionQueue, type) { type0, type1 -> type1.CastingEnvironmentPriority - type0.CastingEnvironmentPriority }
 		addSorted(iotaExtractionQueue, type) { type0, type1 -> type1.iotaPriority - type0.iotaPriority }
 
 		linkableTypes[type.id] = type
@@ -113,19 +113,19 @@ object LinkableRegistry {
 		abstract val canCast: Boolean
 
 		/**
-		 * Takes in a [CastingContext] and returns an [ILinkable] if an [ILinkable] of type [T] is the caster of the
-		 * [CastingContext], and null otherwise (where, e.g., a wisp or a player may be the 'caster' here).
+		 * Takes in a [CastingEnvironment] and returns an [ILinkable] if an [ILinkable] of type [T] is the caster of the
+		 * [CastingEnvironment], and null otherwise (where, e.g., a wisp or a player may be the 'caster' here).
 		 */
-		abstract fun linkableFromCastingContext(ctx: CastingContext): T?
+		abstract fun linkableFromCastingEnvironment(ctx: CastingEnvironment): T?
 
 		/**
 		 * An [Int] representing how high priority this type of [ILinkable] should be when extracting an [ILinkable]
-		 * from a [CastingContext]. (Lower number means lower priority)
+		 * from a [CastingEnvironment]. (Lower number means lower priority)
 		 */
-		abstract val castingContextPriority: Int
+		abstract val CastingEnvironmentPriority: Int
 
 		/**
-		 * Takes in a [CastingContext] and returns an [ILinkable] if an [ILinkable] of type [T] is referenced by that
+		 * Takes in a [CastingEnvironment] and returns an [ILinkable] if an [ILinkable] of type [T] is referenced by that
 		 * iota, and null otherwise.
 		 */
 		abstract fun linkableFromIota(iota: Iota, level: ServerLevel): T?
@@ -193,8 +193,8 @@ object LinkableRegistry {
 	}
 
 	@JvmStatic
-	fun linkableFromCastingContext(ctx: CastingContext): ILinkable {
-		castingContextExtractionQueue.forEach { type -> type.linkableFromCastingContext(ctx)?.let { return it } }
+	fun linkableFromCastingEnvironment(ctx: CastingEnvironment): ILinkable {
+		CastingEnvironmentExtractionQueue.forEach { type -> type.linkableFromCastingEnvironment(ctx)?.let { return it } }
 		throw Exception("At least one type should have accepted the ctx and returned itself (namely the player type).")
 	}
 

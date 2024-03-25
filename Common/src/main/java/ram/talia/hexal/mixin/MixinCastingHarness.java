@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import ram.talia.hexal.api.HexalAPI;
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext;
+import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment;
 import ram.talia.hexal.common.casting.Patterns;
 import ram.talia.hexal.common.entities.BaseCastingWisp;
 import ram.talia.hexal.xplat.IXplatAbstractions;
@@ -46,8 +46,8 @@ public abstract class MixinCastingHarness {
 
 		if (o instanceof OperatorSideEffect.Particles particles) {
 
-			CastingContext ctx = harness.getCtx();
-			IMixinCastingContext ctxi = (IMixinCastingContext)(Object) ctx;
+			CastingEnvironment ctx = harness.getCtx();
+			IMixinCastingEnvironment ctxi = (IMixinCastingEnvironment)(Object) ctx;
 
 			if (!ctxi.hasWisp())
 				return sideEffects.add(particles);
@@ -67,8 +67,8 @@ public abstract class MixinCastingHarness {
 			),
 			remap = false)
 	private void playSoundWisp (ServerLevel level, Player player, double x, double y, double z, SoundEvent soundEvent, SoundSource soundSource, float v, float p) {
-		CastingContext ctx = harness.getCtx();
-		IMixinCastingContext wispContext = (IMixinCastingContext) (Object) ctx;
+		CastingEnvironment ctx = harness.getCtx();
+		IMixinCastingEnvironment wispContext = (IMixinCastingEnvironment) (Object) ctx;
 
 		BaseCastingWisp wisp = wispContext.getWisp();
 
@@ -91,8 +91,8 @@ public abstract class MixinCastingHarness {
 			argsOnly = true
 	)
 	private int removeConsumedFromCost(int value) {
-		CastingContext ctx = harness.getCtx();
-		IMixinCastingContext iCtx = (IMixinCastingContext) (Object) ctx;
+		CastingEnvironment ctx = harness.getCtx();
+		IMixinCastingEnvironment iCtx = (IMixinCastingEnvironment) (Object) ctx;
 
 		var consumedMedia = iCtx.getConsumedMedia();
 		if (consumedMedia == 0)
@@ -121,7 +121,7 @@ public abstract class MixinCastingHarness {
 		
 //		HexalAPI.LOGGER.info("manaCost: %d".formatted(manaCost));
 
-		IMixinCastingContext wispContext = (IMixinCastingContext)(Object)((CastingHarness)(Object)this).getCtx();
+		IMixinCastingEnvironment wispContext = (IMixinCastingEnvironment)(Object)((CastingHarness)(Object)this).getCtx();
 		
 		BaseCastingWisp wisp = wispContext.getWisp();
 		
@@ -148,13 +148,13 @@ public abstract class MixinCastingHarness {
 			locals = LocalCapture.CAPTURE_FAILEXCEPTION,
 			remap = false)
 	private void executeIotaMacro (Iota iota, ServerLevel world, CallbackInfoReturnable<ControllerInfo> cir) {
-		CastingContext ctx = harness.getCtx();
+		CastingEnvironment ctx = harness.getCtx();
 		
 		List<Iota> toExecute;
 		
 		// only work if the caster's enlightened, the caster is staff-casting, and they haven't escaped this pattern
 		// (meaning you can get a copy of the pattern to mark it as not a macro again)
-		if (ctx.getSpellCircle() != null || ((IMixinCastingContext) (Object) ctx).hasWisp())
+		if (ctx.getSpellCircle() != null || ((IMixinCastingEnvironment) (Object) ctx).hasWisp())
 			return;
 		if (!ctx.isCasterEnlightened() || harness.getEscapeNext())
 			toExecute = new ArrayList<>(Collections.singleton(iota));

@@ -1,13 +1,13 @@
 package ram.talia.hexal.common.casting.actions
 
-import at.petrak.hexcasting.api.casting.ConstMediaAction
+import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
 import at.petrak.hexcasting.api.casting.asActionResult
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.getPositiveDouble
 import at.petrak.hexcasting.api.casting.getVec3
 import at.petrak.hexcasting.api.casting.iota.EntityIota
 import at.petrak.hexcasting.api.casting.iota.Iota
-import at.petrak.hexcasting.common.casting.operators.selectors.OpGetEntitiesBy
+import at.petrak.hexcasting.common.casting.actions.selectors.OpGetEntitiesBy
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
@@ -15,7 +15,7 @@ import ram.talia.hexal.api.getEntityTypeOrItemType
 
 class OpGetEntitiesByDyn(val negate: Boolean) : ConstMediaAction {
     override val argc = 3
-    override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
         val type = args.getEntityTypeOrItemType(0, argc)
         val pos = args.getVec3(1, argc)
         val radius = args.getPositiveDouble(2, argc)

@@ -3,7 +3,7 @@ package ram.talia.hexal.common.casting.actions.spells.link
 import at.petrak.hexcasting.api.casting.ParticleSpray
 import at.petrak.hexcasting.api.casting.RenderedSpell
 import at.petrak.hexcasting.api.casting.SpellAction
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import ram.talia.hexal.api.config.HexalConfig
@@ -14,7 +14,7 @@ import ram.talia.hexal.api.spell.mishaps.MishapLinkToSelf
 object OpUnlinkOthers : SpellAction {
     override val argc = 2
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
         val linkThis = LinkableRegistry.linkableFromIota(args[0], ctx.world)
                 ?: throw MishapInvalidIota.ofType(args[0], 1, "linkable")
         val linkOther = LinkableRegistry.linkableFromIota(args[1], ctx.world)
@@ -34,6 +34,6 @@ object OpUnlinkOthers : SpellAction {
     }
 
     private data class Spell(val linkThis: ILinkable, val other: ILinkable) : RenderedSpell {
-        override fun cast(ctx: CastingContext) = if (linkThis.getLinkedIndex(other) != -1) linkThis.unlink(other) else Unit
+        override fun cast(ctx: CastingEnvironment) = if (linkThis.getLinkedIndex(other) != -1) linkThis.unlink(other) else Unit
     }
 }

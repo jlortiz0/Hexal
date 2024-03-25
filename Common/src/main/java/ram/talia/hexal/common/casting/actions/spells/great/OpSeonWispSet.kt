@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.casting.actions.spells.great
 
 import at.petrak.hexcasting.api.casting.*
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getBaseCastingWisp
@@ -12,7 +12,7 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 object OpSeonWispSet : SpellAction {
     override val argc = 1
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
         val wisp = args.getBaseCastingWisp(0, argc)
 
         if (wisp.caster != ctx.caster)
@@ -22,7 +22,7 @@ object OpSeonWispSet : SpellAction {
     }
 
     private data class Spell(val wisp: BaseCastingWisp) : RenderedSpell {
-        override fun cast(ctx: CastingContext) {
+        override fun cast(ctx: CastingEnvironment) {
             // seon can only be changed once the previous seon has died.
             val lastSeon = IXplatAbstractions.INSTANCE.getSeon(ctx.caster)
             if (lastSeon == null || lastSeon.isRemoved)

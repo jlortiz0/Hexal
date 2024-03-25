@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.casting.actions.spells.motes
 
 import at.petrak.hexcasting.api.casting.asActionResult
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.getPositiveIntUnder
 import at.petrak.hexcasting.api.casting.getVillager
 import at.petrak.hexcasting.api.casting.iota.DoubleIota
@@ -17,7 +17,7 @@ import ram.talia.hexal.api.getMoteOrMoteList
 import ram.talia.hexal.api.mediafieditems.ItemRecord
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.VarargConstMediaAction
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment
 import ram.talia.hexal.api.spell.iota.MoteIota
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
 import ram.talia.hexal.api.spell.mishaps.MishapStorageFull
@@ -33,7 +33,7 @@ object OpTradeMote : VarargConstMediaAction {
     }
 
     @Suppress("CAST_NEVER_SUCCEEDS")
-    override fun execute(args: List<Iota>, argc: Int, ctx: CastingContext): List<Iota> {
+    override fun execute(args: List<Iota>, argc: Int, ctx: CastingEnvironment): List<Iota> {
         val villager = args.getVillager(0, argc)
         val toTradeItemIotas = args.getMoteOrMoteList(1, argc)?.map({ listOf(it) }, { it }) ?: return emptyList<Iota>().asActionResult
         val tradeIndex = if (args.size == 3) args.getPositiveIntUnder(2, villager.offers.size, argc) else null
@@ -52,7 +52,7 @@ object OpTradeMote : VarargConstMediaAction {
 
         ctx.assertEntityInRange(villager)
 
-        val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(ctx.caster.position())
+        val storage = (ctx as IMixinCastingEnvironment).boundStorage ?: throw MishapNoBoundStorage(ctx.caster.position())
         if (!MediafiedItemManager.isStorageLoaded(storage))
             throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
 

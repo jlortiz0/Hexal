@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.casting.actions.everbook
 
 import at.petrak.hexcasting.api.casting.*
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.math.HexPattern
 import at.petrak.hexcasting.api.casting.mishaps.MishapNoAkashicRecord
@@ -21,7 +21,7 @@ object OpEverbookRead : SpellAction {
 	override val alwaysProcessGreatSpell = false
 	override val causesBlindDiversion = false
 
-	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+	override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		val pos = args.getBlockPos(0, argc)
 		val key = args.getPattern(1, argc)
 
@@ -49,7 +49,7 @@ object OpEverbookRead : SpellAction {
 	}
 
 	private data class Spell(val record: BlockAkashicRecord, val recordPos: BlockPos, val key: HexPattern, val datum: Iota) : RenderedSpell {
-		override fun cast(ctx: CastingContext) {
+		override fun cast(ctx: CastingEnvironment) {
 			record.addNewDatum(recordPos, ctx.world, key, datum)
 
 			ctx.world.playSound(null, recordPos, HexSounds.SCROLL_SCRIBBLE, SoundSource.BLOCKS, 1f, 0.8f)

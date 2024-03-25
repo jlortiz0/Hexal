@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.casting.actions.spells.motes
 
-import at.petrak.hexcasting.api.casting.ConstMediaAction
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.asActionResult
 import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
@@ -10,7 +10,7 @@ import ram.talia.hexal.api.getMote
 object OpCombineMotes : ConstMediaAction {
     override val argc = 2
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
         val absorber = args.getMote(0, argc)
         val absorbee = args.getMote(1, argc)
 

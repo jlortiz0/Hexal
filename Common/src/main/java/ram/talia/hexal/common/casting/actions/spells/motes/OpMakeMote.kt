@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.casting.actions.spells.motes
 
 import at.petrak.hexcasting.api.casting.*
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.casting.eval.SpellContinuation
 import at.petrak.hexcasting.api.casting.casting.sideeffects.OperatorSideEffect
 import at.petrak.hexcasting.api.casting.iota.EntityIota
@@ -15,7 +15,7 @@ import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getMote
 import ram.talia.hexal.api.getItemEntityOrItemFrame
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
 import ram.talia.hexal.api.spell.mishaps.MishapStorageFull
 
@@ -37,7 +37,7 @@ object OpMakeMote : Action {
         get() = HexalConfig.server.makeItemCost
 
     @Suppress("CAST_NEVER_SUCCEEDS")
-    override fun operate(continuation: SpellContinuation, stack: MutableList<Iota>, ravenmind: Iota?, ctx: CastingContext): OperationResult {
+    override fun operate(continuation: SpellContinuation, stack: MutableList<Iota>, ravenmind: Iota?, ctx: CastingEnvironment): OperationResult {
         val argc = this.argc(stack.reversed())
         if (argc > stack.size)
             throw MishapNotEnoughArgs(argc, stack.size)
@@ -63,7 +63,7 @@ object OpMakeMote : Action {
                     iEntityEither.map( { it.item.count = countRemaining }, { it.item.count = countRemaining } )
                 stack.add(mote)
             } else {
-                val storage = (ctx as IMixinCastingContext).boundStorage ?: throw MishapNoBoundStorage(iEntity.position())
+                val storage = (ctx as IMixinCastingEnvironment).boundStorage ?: throw MishapNoBoundStorage(iEntity.position())
                 if (!MediafiedItemManager.isStorageLoaded(storage))
                     throw MishapNoBoundStorage(iEntity.position(), "storage_unloaded")
                 if (MediafiedItemManager.isStorageFull(storage) != false) // if this is somehow null we should still throw an error here, things have gone pretty wrong
@@ -95,6 +95,6 @@ object OpMakeMote : Action {
      * Exists solely to get casting sounds.
      */
     private object Spell : RenderedSpell {
-        override fun cast(ctx: CastingContext) { }
+        override fun cast(ctx: CastingEnvironment) { }
     }
 }

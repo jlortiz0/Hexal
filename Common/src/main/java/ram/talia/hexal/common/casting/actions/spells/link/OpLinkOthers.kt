@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.casting.actions.spells.link
 
 import at.petrak.hexcasting.api.casting.*
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import at.petrak.hexcasting.api.casting.mishaps.MishapLocationTooFarAway
@@ -13,7 +13,7 @@ import ram.talia.hexal.api.spell.mishaps.MishapLinkToSelf
 object OpLinkOthers : SpellAction {
 	override val argc = 2
 
-	override fun execute(args: List<Iota>, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+	override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
 		val linkThis = LinkableRegistry.linkableFromIota(args[0], ctx.world)
 				?: throw MishapInvalidIota.ofType(args[0], 1, "linkable")
 		val linkOther = LinkableRegistry.linkableFromIota(args[1], ctx.world)
@@ -36,6 +36,6 @@ object OpLinkOthers : SpellAction {
 	}
 
 	private data class Spell(val linkThis: ILinkable, val linkOther: ILinkable) : RenderedSpell {
-		override fun cast(ctx: CastingContext) = linkThis.link(linkOther)
+		override fun cast(ctx: CastingEnvironment) = linkThis.link(linkOther)
 	}
 }

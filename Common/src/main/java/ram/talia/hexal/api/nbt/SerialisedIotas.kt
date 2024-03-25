@@ -1,13 +1,9 @@
 package ram.talia.hexal.api.nbt
 
-import at.petrak.hexcasting.api.casting.iota.EntityIota
-import at.petrak.hexcasting.api.casting.iota.Iota
-import at.petrak.hexcasting.api.casting.iota.ListIota
-import at.petrak.hexcasting.api.casting.iota.NullIota
+import at.petrak.hexcasting.api.casting.iota.*
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.downcast
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
-import at.petrak.hexcasting.common.lib.hex.HexIotaTypes.getTypeFromTag
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.NbtUtils
@@ -55,10 +51,10 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
 
     private fun scanTagForEntities(tag: CompoundTag, referencedEntityUUIDs: MutableList<UUID>)
     {
-        val type = getTypeFromTag(tag) ?: return
+        val type = IotaType.getTypeFromTag(tag) ?: return
         val data = tag[HexIotaTypes.KEY_DATA] ?: return
 
-        when (getTypeFromTag(tag)) {
+        when (IotaType.getTypeFromTag(tag)) {
             HexIotaTypes.ENTITY -> {
                 val uuidTag = data.downcast(CompoundTag.TYPE)["uuid"] ?: return
                 val uuid = NbtUtils.loadUUID(uuidTag)
@@ -217,7 +213,7 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
         if (tag != null)
         {
             // Modify serialized version and invalidate cache
-            val newTag = HexIotaTypes.serialize(iota)
+            val newTag = IotaType.serialize(iota)
             tag!!.add(newTag)
 
             // Invalidate caches
@@ -305,7 +301,7 @@ class SerialisedIotaList(private var tag: ListTag?, private var iotas: MutableLi
                 this.tag = null;
             }
 
-            return HexIotaTypes.deserialize(poppedTag.asCompound, level)
+            return IotaType.deserialize(poppedTag.asCompound, level)
         }
         else if (iotas != null)
         {
@@ -415,7 +411,7 @@ class SerialisedIota(private val iotaList: SerialisedIotaList = SerialisedIotaLi
         val listTag = iotaList.getTag()
         return if (listTag.size == 0)
         {
-            HexIotaTypes.serialize(NullIota())
+            IotaType.serialize(NullIota())
         }
         else
         {

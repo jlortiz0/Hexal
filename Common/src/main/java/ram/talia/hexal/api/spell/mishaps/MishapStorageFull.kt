@@ -1,7 +1,7 @@
 package ram.talia.hexal.api.spell.mishaps
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.Mishap
 import net.minecraft.core.BlockPos
@@ -11,18 +11,18 @@ import net.minecraft.world.item.DyeColor
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.plus
-import ram.talia.hexal.api.spell.casting.IMixinCastingContext
+import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment
 import ram.talia.hexal.api.spell.iota.MoteIota
 
 @Suppress("CAST_NEVER_SUCCEEDS")
 class MishapStorageFull(val position: Vec3) : Mishap() {
-    override fun accentColor(ctx: CastingContext, errorCtx: Context): FrozenColorizer = dyeColor(DyeColor.RED)
+    override fun accentColor(ctx: CastingEnvironment, errorCtx: Context): FrozenColorizer = dyeColor(DyeColor.RED)
 
-    override fun errorMessage(ctx: CastingContext, errorCtx: Context): Component = error("full_storage")
+    override fun errorMessage(ctx: CastingEnvironment, errorCtx: Context): Component = error("full_storage")
 
-    override fun execute(ctx: CastingContext, errorCtx: Context, stack: MutableList<Iota>) {
+    override fun execute(ctx: CastingEnvironment, errorCtx: Context, stack: MutableList<Iota>) {
         // get a random record from in the storage
-        val storage = (ctx as IMixinCastingContext).boundStorage ?: return // somehow got mishap storage full with no storage, wild
+        val storage = (ctx as IMixinCastingEnvironment).boundStorage ?: return // somehow got mishap storage full with no storage, wild
         val allRecords = MediafiedItemManager.getAllRecords(storage) ?: return
         val index = allRecords.keys.randomOrNull() ?: return
         val iota = MoteIota(index)

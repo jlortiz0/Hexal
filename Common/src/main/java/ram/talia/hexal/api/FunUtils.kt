@@ -1,12 +1,12 @@
 package ram.talia.hexal.api
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.casting.casting.CastingContext
-import at.petrak.hexcasting.api.casting.mishaps.MishapLocationTooFarAway
+import at.petrak.hexcasting.api.pigment.ColorProvider
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.mishaps.MishapBadLocation
 import net.minecraft.util.RandomSource
 import net.minecraft.world.phys.Vec3
 
-fun FrozenColorizer.nextColour(random: RandomSource): Int {
+fun ColorProvider.nextColour(random: RandomSource): Int {
 	return getColor(
 		random.nextFloat() * 16384,
 		Vec3(
@@ -21,9 +21,9 @@ fun RandomSource.nextDouble(lower: Double, upper: Double) = lower + (upper - low
 
 fun RandomSource.nextGaussian(mean: Double, stdev: Double) = mean + stdev * this.nextGaussian()
 
-fun CastingContext.assertVecListInRange(list: List<Vec3>) = this.assertVecListInRange(list, null)
+fun CastingEnvironment.assertVecListInRange(list: List<Vec3>) = this.assertVecListInRange(list, null)
 
-fun CastingContext.assertVecListInRange(list: List<Vec3>, intraRange: Double?) {
+fun CastingEnvironment.assertVecListInRange(list: List<Vec3>, intraRange: Double?) {
 	for (vec in list) {
 		this.assertVecInRange(vec)
 	}
@@ -32,7 +32,7 @@ fun CastingContext.assertVecListInRange(list: List<Vec3>, intraRange: Double?) {
 
 		for (i in list.indices) {
 			for (j in i until list.size) {
-				if (list[i].distanceToSqr(list[j]) > sqrRange) throw MishapLocationTooFarAway(list[j])
+				if (list[i].distanceToSqr(list[j]) > sqrRange) throw MishapBadLocation(list[j])
 			}
 		}
 	}

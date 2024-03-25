@@ -1,10 +1,10 @@
 package ram.talia.hexal.common.casting.actions.spells.gates
 
 import at.petrak.hexcasting.api.mod.HexTags
-import at.petrak.hexcasting.api.casting.Action
+import at.petrak.hexcasting.api.casting.castables.Action
 import at.petrak.hexcasting.api.casting.ParticleSpray
 import at.petrak.hexcasting.api.casting.RenderedSpell
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.getVec3
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.MishapLocationTooFarAway
@@ -30,7 +30,7 @@ object OpCloseGate : VarargSpellAction {
         return 2
     }
 
-    override fun execute(args: List<Iota>, argc: Int, ctx: CastingContext): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
+    override fun execute(args: List<Iota>, argc: Int, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
         val gate = args.getGate(0, argc)
         val targetPos = if (gate.isDrifting) args.getVec3(1, argc) else gate.getTargetPos(ctx.world) ?: return null
         
@@ -66,13 +66,13 @@ object OpCloseGate : VarargSpellAction {
     private data class Spell(val gatees: Set<Entity>, val targetPos: Vec3, val dropItems: Boolean) : RenderedSpell {
         // stole all this from the default teleport; sadge that it isn't accessible.
 
-        override fun cast(ctx: CastingContext) {
+        override fun cast(ctx: CastingEnvironment) {
             for (gatee in gatees) {
                 teleport(gatee, gatees, targetPos - gatee.position(), ctx)
             }
         }
 
-        fun teleport(teleportee: Entity, allTeleportees: Set<Entity>, delta: Vec3, ctx: CastingContext) {
+        fun teleport(teleportee: Entity, allTeleportees: Set<Entity>, delta: Vec3, ctx: CastingEnvironment) {
             val distance = delta.length()
 
             // TODO make this not a magic number (config?)

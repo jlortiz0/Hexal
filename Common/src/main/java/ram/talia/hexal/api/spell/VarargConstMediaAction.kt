@@ -1,12 +1,14 @@
 package ram.talia.hexal.api.spell
 
-import at.petrak.hexcasting.api.casting.Action
-import at.petrak.hexcasting.api.casting.OperationResult
-import at.petrak.hexcasting.api.casting.casting.CastingContext
-import at.petrak.hexcasting.api.casting.casting.eval.SpellContinuation
-import at.petrak.hexcasting.api.casting.casting.sideeffects.OperatorSideEffect
+import at.petrak.hexcasting.api.casting.castables.Action
+import at.petrak.hexcasting.api.casting.eval.OperationResult
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.eval.sideeffects.OperatorSideEffect
+import at.petrak.hexcasting.api.casting.eval.vm.CastingImage
+import at.petrak.hexcasting.api.casting.eval.vm.SpellContinuation
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.MishapNotEnoughArgs
+import at.petrak.hexcasting.common.lib.hex.HexEvalSounds
 
 /**
  * An action that always costs the same amount of media, but can accept a variable number of arguments depending on what is on top of the stack.
@@ -23,24 +25,25 @@ interface VarargConstMediaAction : Action {
      */
     fun argc(stack: List<Iota>): Int
 
-    fun execute(args: List<Iota>, argc: Int, ctx: CastingContext): List<Iota>
+    fun execute(args: List<Iota>, argc: Int, ctx: CastingEnvironment): List<Iota>
 
     override fun operate(
-            continuation: SpellContinuation,
-            stack: MutableList<Iota>,
-            ravenmind: Iota?,
-            ctx: CastingContext
+        env: CastingEnvironment,
+        image: CastingImage,
+        continuation: SpellContinuation,
     ): OperationResult {
+        val stack = image.stack.toMutableList()
         val argc = this.argc(stack.asReversed())
         if (argc > stack.size)
             throw MishapNotEnoughArgs(argc, stack.size)
         val args = stack.takeLast(argc)
         repeat(argc) { stack.removeLast() }
-        val newData = this.execute(args, argc, ctx)
+        val newData = this.execute(args, argc, env)
         stack.addAll(newData)
 
         val sideEffects = mutableListOf<OperatorSideEffect>(OperatorSideEffect.ConsumeMedia(this.mediaCost))
 
-        return OperationResult(continuation, stack, ravenmind, sideEffects)
+        val image2 = image.copy(stack = stack, opsConsumed = image.opsConsumed + 1)
+        return OperationResult(image2, sideEffects, continuation, HexEvalSounds.NORMAL_EXECUTE)
     }
 }

@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.casting.actions.spells.wisp
 
-import at.petrak.hexcasting.api.casting.ConstMediaAction
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.NullIota
 import ram.talia.hexal.xplat.IXplatAbstractions
@@ -9,7 +9,7 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 object OpSeonWispGet : ConstMediaAction {
     override val argc = 0
 
-    override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
         return IXplatAbstractions.INSTANCE.getSeon(ctx.caster)?.asActionResult ?: listOf(NullIota())
     }
 }

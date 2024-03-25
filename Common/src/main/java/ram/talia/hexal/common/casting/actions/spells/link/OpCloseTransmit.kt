@@ -1,14 +1,14 @@
 package ram.talia.hexal.common.casting.actions.spells.link
 
-import at.petrak.hexcasting.api.casting.ConstMediaAction
-import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
+import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpCloseTransmit : ConstMediaAction {
 	override val argc = 0
 
-	override fun execute(args: List<Iota>, ctx: CastingContext): List<Iota> {
+	override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
 		IXplatAbstractions.INSTANCE.resetPlayerTransmittingTo(ctx.caster)
 		return listOf()
 	}
