@@ -1,11 +1,11 @@
 package ram.talia.hexal.common.casting.actions.everbook
 
-import at.petrak.hexcasting.api.spell.*
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.iota.NullIota
-import at.petrak.hexcasting.api.spell.mishaps.MishapNoAkashicRecord
-import at.petrak.hexcasting.api.spell.mishaps.MishapOthersName
+import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.NullIota
+import at.petrak.hexcasting.api.casting.mishaps.MishapNoAkashicRecord
+import at.petrak.hexcasting.api.casting.mishaps.MishapOthersName
 import at.petrak.hexcasting.common.blocks.akashic.BlockAkashicRecord
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.spell.mishaps.MishapIllegalInterworldIota

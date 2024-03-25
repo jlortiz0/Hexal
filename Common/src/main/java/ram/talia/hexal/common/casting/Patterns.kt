@@ -3,13 +3,13 @@
 package ram.talia.hexal.common.casting
 
 import at.petrak.hexcasting.api.PatternRegistry
-import at.petrak.hexcasting.api.spell.Action
-import at.petrak.hexcasting.api.spell.iota.DoubleIota
-import at.petrak.hexcasting.api.spell.iota.PatternIota
-import at.petrak.hexcasting.api.spell.iota.Vec3Iota
-import at.petrak.hexcasting.api.spell.math.HexDir.*
-import at.petrak.hexcasting.api.spell.math.HexPattern
-import at.petrak.hexcasting.api.spell.math.HexPattern.Companion.fromAngles
+import at.petrak.hexcasting.api.casting.Action
+import at.petrak.hexcasting.api.casting.iota.DoubleIota
+import at.petrak.hexcasting.api.casting.iota.PatternIota
+import at.petrak.hexcasting.api.casting.iota.Vec3Iota
+import at.petrak.hexcasting.api.casting.math.HexDir.*
+import at.petrak.hexcasting.api.casting.math.HexPattern
+import at.petrak.hexcasting.api.casting.math.HexPattern.Companion.fromAngles
 import at.petrak.hexcasting.common.casting.operators.selectors.*
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.phys.Vec3

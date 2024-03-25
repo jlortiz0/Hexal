@@ -1,11 +1,11 @@
 package ram.talia.hexal.mixin;
 
-import at.petrak.hexcasting.api.spell.casting.*;
-import at.petrak.hexcasting.api.spell.casting.sideeffects.OperatorSideEffect;
-import at.petrak.hexcasting.api.spell.iota.Iota;
-import at.petrak.hexcasting.api.spell.iota.PatternIota;
-import at.petrak.hexcasting.api.spell.math.HexDir;
-import at.petrak.hexcasting.api.spell.math.HexPattern;
+import at.petrak.hexcasting.api.casting.casting.*;
+import at.petrak.hexcasting.api.casting.casting.sideeffects.OperatorSideEffect;
+import at.petrak.hexcasting.api.casting.iota.Iota;
+import at.petrak.hexcasting.api.casting.iota.PatternIota;
+import at.petrak.hexcasting.api.casting.math.HexDir;
+import at.petrak.hexcasting.api.casting.math.HexPattern;
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;

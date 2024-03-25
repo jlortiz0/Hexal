@@ -1,8 +1,8 @@
 package ram.talia.hexal.common.casting.actions.spells.gates
 
-import at.petrak.hexcasting.api.spell.*
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.iota.Iota
 import net.minecraft.world.entity.Entity
 import ram.talia.hexal.api.getGate
 import ram.talia.hexal.api.spell.iota.GateIota

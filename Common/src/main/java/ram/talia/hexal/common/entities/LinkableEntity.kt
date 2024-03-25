@@ -1,6 +1,6 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.spell.iota.EntityIota
+import at.petrak.hexcasting.api.casting.iota.EntityIota
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket

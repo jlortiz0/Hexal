@@ -1,7 +1,7 @@
 package ram.talia.hexal.interop.patchouli
 
-import at.petrak.hexcasting.api.spell.math.HexCoord
-import at.petrak.hexcasting.api.spell.math.HexPattern
+import at.petrak.hexcasting.api.casting.math.HexCoord
+import at.petrak.hexcasting.api.casting.math.HexPattern
 import at.petrak.hexcasting.api.utils.*
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes.KEY_DATA

@@ -1,8 +1,8 @@
 package ram.talia.hexal.api.spell.casting.triggers
 
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.getLong
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.getLong
+import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.utils.asLong
 import net.minecraft.nbt.ByteTag
 import net.minecraft.nbt.LongTag

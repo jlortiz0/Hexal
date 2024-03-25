@@ -1,10 +1,10 @@
 package ram.talia.hexal.common.casting.actions.spells.gates
 
 import at.petrak.hexcasting.api.mod.HexTags
-import at.petrak.hexcasting.api.spell.*
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.mishaps.MishapImmuneEntity
+import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.mishaps.MishapImmuneEntity
 import net.minecraft.world.entity.Entity
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.getGate

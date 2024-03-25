@@ -1,11 +1,11 @@
 package ram.talia.hexal.common.casting.actions.spells.link
 
-import at.petrak.hexcasting.api.spell.ParticleSpray
-import at.petrak.hexcasting.api.spell.RenderedSpell
-import at.petrak.hexcasting.api.spell.SpellAction
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.getPositiveIntUnder
-import at.petrak.hexcasting.api.spell.iota.Iota
+import at.petrak.hexcasting.api.casting.ParticleSpray
+import at.petrak.hexcasting.api.casting.RenderedSpell
+import at.petrak.hexcasting.api.casting.SpellAction
+import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.getPositiveIntUnder
+import at.petrak.hexcasting.api.casting.iota.Iota
 import ram.talia.hexal.api.getBaseCastingWisp
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.mishaps.MishapOthersWisp

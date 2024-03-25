@@ -1,14 +1,14 @@
 package ram.talia.hexal.api.spell
 
-import at.petrak.hexcasting.api.spell.Action
-import at.petrak.hexcasting.api.spell.OperationResult
-import at.petrak.hexcasting.api.spell.ParticleSpray
-import at.petrak.hexcasting.api.spell.RenderedSpell
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.casting.eval.SpellContinuation
-import at.petrak.hexcasting.api.spell.casting.sideeffects.OperatorSideEffect
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.mishaps.MishapNotEnoughArgs
+import at.petrak.hexcasting.api.casting.Action
+import at.petrak.hexcasting.api.casting.OperationResult
+import at.petrak.hexcasting.api.casting.ParticleSpray
+import at.petrak.hexcasting.api.casting.RenderedSpell
+import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.casting.eval.SpellContinuation
+import at.petrak.hexcasting.api.casting.casting.sideeffects.OperatorSideEffect
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.mishaps.MishapNotEnoughArgs
 
 /**
  * An action that has some affect on the world, and takes a variable number of arguments depending on what's on the stack.

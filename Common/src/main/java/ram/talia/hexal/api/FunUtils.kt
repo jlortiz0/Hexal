@@ -1,8 +1,8 @@
 package ram.talia.hexal.api
 
 import at.petrak.hexcasting.api.misc.FrozenColorizer
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.mishaps.MishapLocationTooFarAway
+import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.mishaps.MishapLocationTooFarAway
 import net.minecraft.util.RandomSource
 import net.minecraft.world.phys.Vec3
 

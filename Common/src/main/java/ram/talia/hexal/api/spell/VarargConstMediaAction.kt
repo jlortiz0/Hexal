@@ -1,12 +1,12 @@
 package ram.talia.hexal.api.spell
 
-import at.petrak.hexcasting.api.spell.Action
-import at.petrak.hexcasting.api.spell.OperationResult
-import at.petrak.hexcasting.api.spell.casting.CastingContext
-import at.petrak.hexcasting.api.spell.casting.eval.SpellContinuation
-import at.petrak.hexcasting.api.spell.casting.sideeffects.OperatorSideEffect
-import at.petrak.hexcasting.api.spell.iota.Iota
-import at.petrak.hexcasting.api.spell.mishaps.MishapNotEnoughArgs
+import at.petrak.hexcasting.api.casting.Action
+import at.petrak.hexcasting.api.casting.OperationResult
+import at.petrak.hexcasting.api.casting.casting.CastingContext
+import at.petrak.hexcasting.api.casting.casting.eval.SpellContinuation
+import at.petrak.hexcasting.api.casting.casting.sideeffects.OperatorSideEffect
+import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.mishaps.MishapNotEnoughArgs
 
 /**
  * An action that always costs the same amount of media, but can accept a variable number of arguments depending on what is on top of the stack.
