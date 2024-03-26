@@ -64,16 +64,4 @@ public abstract class MixinCastingEnvironment implements IMixinCastingEnvironmen
 	public void incTimesTicked(BlockPos pos) {
 		numTimesTicked.merge(pos, 1, Integer::sum);
 	}
-
-	/**
-	 * Modifies {@link at.petrak.hexcasting.api.casting.eval.CastingEnvironment} to make it properly allow wisps to affect things within their range. The INVOKE location and
-	 * use of cancellable mean the wisp can affect things in range of the player's greater sentinel, but can't affect things in range of the player.
-	 */
-	@Inject(method = "isVecInRange", at = @At(value = "RETURN", ordinal = 0), cancellable = true,
-			locals = LocalCapture.CAPTURE_FAILEXCEPTION, remap = false)
-	private void isVecInRangeWisp (Vec3 vec, CallbackInfoReturnable<Boolean> cir) {
-		if (this.wisp != null) {
-			cir.setReturnValue(vec.distanceToSqr(this.wisp.position()) <= this.wisp.maxSqrCastingDistance());
-		}
-	}
 }

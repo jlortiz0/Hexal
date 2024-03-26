@@ -30,7 +30,7 @@ public class WispTests {
 		teardownPlayers();
 	}
 	
-	@GameTest(templateNamespace = HexalAPI.MOD_ID, template = "basic", batch = "wispBatch")
+	@GameTest(batch = "wispBatch")
 	public static void basicTickingWispTest (GameTestHelper helper) {
 		var fakePlayer = setupPlayer(helper.getLevel());
 		
@@ -57,7 +57,7 @@ public class WispTests {
 		});
 	}
 	
-	@GameTest(templateNamespace = HexalAPI.MOD_ID, template = "basic", batch = "wispBatch")
+	@GameTest(batch = "wispBatch")
 	public static void linkWispsMessageTest (GameTestHelper helper) {
 		var fakePlayer = setupPlayer(helper.getLevel());
 		
@@ -92,7 +92,7 @@ public class WispTests {
 	
 	
 	// changed this test to non-required since I haven't actually written it yet.
-	@GameTest(templateNamespace = HexalAPI.MOD_ID, template = "basic", timeoutTicks = 1200, required = false) // TODO: change to its own template
+	@GameTest(timeoutTicks = 1200, required = false) // TODO: change to its own template
 	public static void farmingWispTest (GameTestHelper helper) {
 		var fakePlayer = setupPlayer(helper.getLevel());
 		
