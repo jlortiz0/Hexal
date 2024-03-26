@@ -59,7 +59,7 @@ public abstract class MixinCastingHarness {
 		cir.setReturnValue(new CastResult(continuation.pushFrame(frame), img,  List.of(), ResolvedPatternType.UNDONE, HexEvalSounds.NOTHING));
 	}
 
-	@Inject(method = "handleParentheses", at= @At("HEAD"), cancellable = true)
+	@Inject(method = "handleParentheses", at= @At("HEAD"), cancellable = true, remap = false)
 	private void handleTransmission(Iota iota, CallbackInfoReturnable<Pair<CastingImage, ResolvedPatternType>> cir) {
 		CastingEnvironment ctx = harness.getEnv();
 		var transmittingTo = IXplatAbstractions.INSTANCE.getPlayerTransmittingTo(ctx.getCaster());

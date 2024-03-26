@@ -1,22 +1,18 @@
 package ram.talia.hexal.forge
 
 import at.petrak.hexcasting.api.HexAPI
-import at.petrak.hexcasting.api.PatternRegistry
-import at.petrak.hexcasting.api.spell.Action
-import at.petrak.hexcasting.api.spell.iota.PatternIota
-import at.petrak.hexcasting.api.spell.math.HexDir
-import at.petrak.hexcasting.api.spell.math.HexPattern
-import at.petrak.hexcasting.common.casting.operators.eval.OpEval
-import at.petrak.hexcasting.common.casting.operators.lists.OpIndex
-import at.petrak.hexcasting.common.casting.operators.lists.OpSplat
-import at.petrak.hexcasting.common.casting.operators.math.logic.OpBoolIf
-import at.petrak.hexcasting.common.casting.operators.spells.OpPrint
+import at.petrak.hexcasting.api.casting.ActionRegistryEntry
+import at.petrak.hexcasting.api.casting.iota.PatternIota
+import at.petrak.hexcasting.api.casting.math.HexDir
+import at.petrak.hexcasting.api.casting.math.HexPattern
+import at.petrak.hexcasting.common.lib.hex.HexActions
+import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.resources.ResourceLocation
 import ram.talia.hexal.common.casting.Patterns
 
 object OtherPatterns {
 	@JvmField
-	val REVEAL = patternOf(OpPrint)
+	val REVEAL = patternOf(HexActions.PRINT)
 
 	@JvmField
 	val COMPASS = patternOf(HexAPI.modLoc("entity_pos/foot"))
@@ -33,7 +29,7 @@ object OtherPatterns {
 	@JvmField
 	val INEQUALITY = patternOf(HexAPI.modLoc("not_equals"))
 	@JvmField
-	val AUGERS = patternOf(OpBoolIf)
+	val AUGERS = patternOf(HexActions.IF)
 
 	@JvmField
 	val NULLARY = patternOf(HexAPI.modLoc("const/null"))
@@ -48,13 +44,13 @@ object OtherPatterns {
 	@JvmField
 	val GEMINIS_DISINTEGRATION = patternOf(HexAPI.modLoc("duplicate"))
 	@JvmField
-	val FLOCKS_DISINTEGRATION = patternOf(OpSplat)
+	val FLOCKS_DISINTEGRATION = patternOf(HexActions.SPLAT)
 
 	@JvmField
-	val SELECTION_DISTILLATION = patternOf(OpIndex)
+	val SELECTION_DISTILLATION = patternOf(HexActions.INDEX)
 
 	@JvmField
-	val HERMES = patternOf(OpEval)
+	val HERMES = patternOf(HexActions.EVAL)
 
 	@JvmField
 	val INTRO = PatternIota(HexPattern.fromAngles("qqq", HexDir.WEST))
@@ -81,6 +77,7 @@ object OtherPatterns {
 	@JvmField
 	val RECITATION = Patterns.LINK_COMM_READ
 
-	private fun patternOf(op: Action): PatternIota = PatternIota(PatternRegistry.lookupPattern(PatternRegistry.lookupPattern(op)!!).prototype)
-	private fun patternOf(loc: ResourceLocation): PatternIota = PatternIota(PatternRegistry.lookupPattern(loc).prototype)
+	private val registry = IXplatAbstractions.INSTANCE.actionRegistry
+	private fun patternOf(loc: ResourceLocation): PatternIota = PatternIota(registry.get(loc)!!.prototype)
+	private fun patternOf(are: ActionRegistryEntry): PatternIota = PatternIota(are.prototype)
 }

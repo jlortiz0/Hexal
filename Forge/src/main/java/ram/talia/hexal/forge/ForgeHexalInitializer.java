@@ -1,5 +1,6 @@
 package ram.talia.hexal.forge;
 
+import at.petrak.hexcasting.xplat.IXplatAbstractions;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -68,6 +69,9 @@ public class ForgeHexalInitializer {
 		bind(Registry.RECIPE_SERIALIZER_REGISTRY, HexalRecipeSerializers::registerSerializers);
 		bind(Registry.RECIPE_TYPE_REGISTRY, HexalRecipeTypes::registerTypes);
 
+		bind(IXplatAbstractions.INSTANCE.getActionRegistry(), Patterns::register);
+		// bind(IXplatAbstractions.INSTANCE.getSpecialHandlerRegistry(), Patterns::registerSpecial);
+
 		HexalIotaTypes.registerTypes();
 	}
 	
@@ -82,8 +86,6 @@ public class ForgeHexalInitializer {
 				 //noinspection Convert2MethodRef
 				 ForgePacketHandler.init();
 			 }));
-		
-		modBus.addListener((FMLCommonSetupEvent evt) -> evt.enqueueWork(Patterns::registerPatterns));
 		
 		// We have to do these at some point when the registries are still open
 //		modBus.addGenericListener(Item.class, (GenericEvent<Item> evt) -> HexalRecipeSerializers.registerTypes());

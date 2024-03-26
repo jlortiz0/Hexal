@@ -1,8 +1,9 @@
 package ram.talia.hexal.forge.eventhandlers;
 
-import at.petrak.hexcasting.api.spell.iota.Iota;
-import at.petrak.hexcasting.api.spell.iota.NullIota;
-import at.petrak.hexcasting.api.spell.math.HexPattern;
+import at.petrak.hexcasting.api.casting.iota.Iota;
+import at.petrak.hexcasting.api.casting.iota.IotaType;
+import at.petrak.hexcasting.api.casting.iota.NullIota;
+import at.petrak.hexcasting.api.casting.math.HexPattern;
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -54,7 +55,7 @@ public class EverbookEventHandler {
 		if (everbooks.get(player.getUUID()) == null)
 			return;
 		everbooks.get(player.getUUID()).setIota(key, iota);
-		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgSetEverbookAck(key, HexIotaTypes.serialize(iota)));
+		IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, new MsgSetEverbookAck(key, IotaType.serialize(iota)));
 	}
 	
 	public static void removeIota (ServerPlayer player, HexPattern key) {
