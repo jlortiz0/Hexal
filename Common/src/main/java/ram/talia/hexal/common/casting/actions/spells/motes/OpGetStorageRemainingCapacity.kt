@@ -16,10 +16,10 @@ object OpGetStorageRemainingCapacity : ConstMediaAction {
 
     override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
 
-        val storageId = (ctx as IMixinCastingEnvironment).boundStorage ?: throw MishapNoBoundStorage(ctx.caster.position())
+        val storageId = (ctx as IMixinCastingEnvironment).boundStorage ?: throw MishapNoBoundStorage(ctx.caster?.position() ?: ctx.mishapSprayPos())
         if (!MediafiedItemManager.isStorageLoaded(storageId))
-            throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
-        val storage = MediafiedItemManager.getStorage(storageId)?.get() ?: throw MishapNoBoundStorage(ctx.caster.position())
+            throw MishapNoBoundStorage(ctx.caster?.position() ?: ctx.mishapSprayPos(), "storage_unloaded")
+        val storage = MediafiedItemManager.getStorage(storageId)?.get() ?: throw MishapNoBoundStorage(ctx.caster?.position() ?: ctx.mishapSprayPos())
 
         return (HexalConfig.server.maxRecordsInMediafiedStorage - storage.storedItems.size).asActionResult
     }

@@ -18,7 +18,7 @@ object OpStorageContains : ConstMediaAction {
         val storagePos = args.getBlockPos(0, argc)
         val moteOrItem = args.getMoteOrItemType(1, argc)
 
-        ctx.assertVecInRange(storagePos)
+        ctx.assertPosInRange(storagePos)
 
         if (!ctx.canEditBlockAt(storagePos) || !IXplatAbstractions.INSTANCE.isInteractingAllowed(ctx.world, storagePos, Direction.UP, ctx.castingHand, ctx.caster))
             return false.asActionResult

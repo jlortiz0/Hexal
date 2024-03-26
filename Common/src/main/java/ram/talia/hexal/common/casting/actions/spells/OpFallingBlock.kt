@@ -2,6 +2,7 @@ package ram.talia.hexal.common.casting.actions.spells
 
 import at.petrak.hexcasting.api.mod.HexConfig
 import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.xplat.IXplatAbstractions
@@ -27,12 +28,12 @@ import kotlin.math.min
 object OpFallingBlock : SpellAction {
 	override val argc = 1
 
-	override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+	override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
 		val pos = args.getVec3(0, argc)
 		ctx.assertVecInRange(pos)
 
 		val centered = Vec3.atCenterOf(BlockPos(pos))
-		return Triple(
+		return SpellAction.Result(
 			Spell(pos),
 			HexalConfig.server.fallingBlockCost,
 			listOf(ParticleSpray.burst(centered, 1.0))

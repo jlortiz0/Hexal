@@ -1,9 +1,8 @@
 package ram.talia.hexal.common.casting.actions.spells
 
-import at.petrak.hexcasting.api.misc.DiscoveryHandlers
 import at.petrak.hexcasting.api.casting.ParticleSpray
 import at.petrak.hexcasting.api.casting.RenderedSpell
-import at.petrak.hexcasting.api.casting.SpellAction
+import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.getBlockPos
 import at.petrak.hexcasting.api.casting.iota.Iota
@@ -24,6 +23,7 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
+import ram.talia.hexal.api.fakes.FakePlayerFactory
 import ram.talia.hexal.api.getBlockTypeOrBlockItem
 import ram.talia.hexal.api.spell.iota.MoteIota
 import java.util.function.Predicate
@@ -31,25 +31,24 @@ import java.util.function.Predicate
 object OpPlaceType : SpellAction {
     override val argc = 2
 
-    override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
         val block = args.getBlockTypeOrBlockItem(0, argc) ?:
             throw MishapInvalidIota.ofType(args[0], 1, "type.block.able")
         val pos = args.getBlockPos(1, argc)
 
-        ctx.assertVecInRange(pos)
+        ctx.assertPosInRange(pos)
 
         // Mishap if pos already contains a block that can't be replaced
-        val blockHit = BlockHitResult(
-                Vec3.atCenterOf(pos), ctx.caster.direction, pos, false
-        )
-        val itemUseCtx = UseOnContext(ctx.caster, ctx.castingHand, blockHit)
+        val caster = ctx.caster ?: FakePlayerFactory.getMinecraft(ctx.world)
+        val blockHit = BlockHitResult(Vec3.atCenterOf(pos), caster.direction, pos, false)
+        val itemUseCtx = UseOnContext(caster, ctx.castingHand, blockHit)
         val placeContext = BlockPlaceContext(itemUseCtx)
 
         val worldState = ctx.world.getBlockState(pos)
         if (!worldState.canBeReplaced(placeContext))
             throw MishapBadBlock.of(pos, "replaceable")
 
-        return Triple(
+        return SpellAction.Result(
                 Spell(pos, block),
                 HexalConfig.server.placeTypeCost,
                 listOf(ParticleSpray.cloud(Vec3.atCenterOf(pos), 1.0))
@@ -61,8 +60,9 @@ object OpPlaceType : SpellAction {
             if (!ctx.canEditBlockAt(pos))
                 return
 
+            val caster = ctx.caster ?: FakePlayerFactory.getMinecraft(ctx.world)
             val blockHit = BlockHitResult(
-                    Vec3.atCenterOf(pos), ctx.caster.direction, pos, false
+                    Vec3.atCenterOf(pos), caster.direction, pos, false
             )
 
             val bstate = ctx.world.getBlockState(pos)
@@ -76,35 +76,34 @@ object OpPlaceType : SpellAction {
 
             if (!placeeStack.isEmpty) {
                 // https://github.com/VazkiiMods/Psi/blob/master/src/main/java/vazkii/psi/common/spell/trick/block/PieceTrickPlaceBlock.java#L143
-                val oldStack = ctx.caster.getItemInHand(ctx.castingHand)
+                val oldStack = caster.getItemInHand(ctx.castingHand)
                 val spoofedStack = placeeStack.copy()
 
                 // we temporarily give the player the stack, place it using mc code, then give them the old stack back.
                 spoofedStack.count = 1
-                ctx.caster.setItemInHand(ctx.castingHand, spoofedStack)
+                caster.setItemInHand(ctx.castingHand, spoofedStack)
 
-                val itemUseCtx = UseOnContext(ctx.caster, ctx.castingHand, blockHit)
+                val itemUseCtx = UseOnContext(caster, ctx.castingHand, blockHit)
                 val placeContext = BlockPlaceContext(itemUseCtx)
 
                 if (!bstate.canBeReplaced(placeContext)) {
-                    ctx.caster.setItemInHand(ctx.castingHand, oldStack)
+                    caster.setItemInHand(ctx.castingHand, oldStack)
                     return
                 }
 
-                if (blockOrMoteIota.left().isPresent && !ctx.withdrawItem(placeeStack, 1, false)) {
-                    ctx.caster.setItemInHand(ctx.castingHand, oldStack)
+                if (blockOrMoteIota.left().isPresent && !ctx.withdrawItem({ it == placeeStack }, 1, false)) {
                     return
                 }
 
                 val res = spoofedStack.useOn(placeContext)
 
-                ctx.caster.setItemInHand(ctx.castingHand, oldStack)
+                caster.setItemInHand(ctx.castingHand, oldStack)
 
                 if (res == InteractionResult.FAIL)
                     return
 
                 blockOrMoteIota.map(
-                        { ctx.withdrawItem(placeeStack, 1, true) }, // if we're placing based on a block type, remove from the caster's inventory
+                        { ctx.withdrawItem({ it == placeeStack}, 1, true) }, // if we're placing based on a block type, remove from the caster's inventory
                         { itemIota -> itemIota.removeItems(1) } // if we're placing from an item iota, remove from the iota.
                 )
 
@@ -123,14 +122,7 @@ object OpPlaceType : SpellAction {
         }
 
         fun getItemSlot(ctx: CastingEnvironment, stackOK: Predicate<ItemStack>): ItemStack? {
-            val items = DiscoveryHandlers.collectItemSlots(ctx)
-
-            for (stack in items) {
-                if (stackOK.test(stack)) {
-                    return stack
-                }
-            }
-            return null
+            return ctx.getHeldItemToOperateOn(stackOK)?.stack
         }
     }
 }

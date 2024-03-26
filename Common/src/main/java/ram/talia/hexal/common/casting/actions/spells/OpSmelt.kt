@@ -1,9 +1,13 @@
 package ram.talia.hexal.common.casting.actions.spells
 
 import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
+import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidOperatorArgs
 import net.minecraft.core.BlockPos
+import net.minecraft.network.chat.Component
 import net.minecraft.world.SimpleContainer
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.item.ItemEntity
@@ -28,8 +32,8 @@ object OpSmelt : SpellAction {
         return toSmelt.flatMap({ 1 }, { item -> item.item.count }, { item -> item.count.toIntCapped() })
     }
 
-    override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
-        val toSmelt = args.getBlockPosOrItemEntityOrItem(0, argc) ?: return null
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
+        val toSmelt = args.getBlockPosOrItemEntityOrItem(0, argc) ?: throw MishapInvalidIota.of(args[0], args.size - 1, "blockitementityitemframeitem")
 
         val pos = toSmelt.flatMap({ blockPos -> Vec3.atCenterOf(blockPos) }, { item -> item.position() }, { null })
         pos?.let { ctx.assertVecInRange(it) }
@@ -39,11 +43,7 @@ object OpSmelt : SpellAction {
         if (pos != null)
             particles.add(ParticleSpray.burst(pos, 1.0))
 
-        return Triple(
-            Spell(toSmelt),
-            HexalConfig.server.smeltCost * numToSmelt(toSmelt),
-            particles
-        )
+        return SpellAction.Result(Spell(toSmelt), HexalConfig.server.smeltCost * numToSmelt(toSmelt), particles)
     }
 
     private data class Spell(val vOrIeOrI: Anyone<BlockPos, ItemEntity, MoteIota>) : RenderedSpell {

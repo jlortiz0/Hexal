@@ -1,6 +1,7 @@
 package ram.talia.hexal.common.casting.actions.spells.great
 
 import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
@@ -16,10 +17,8 @@ import kotlin.math.ln
 object OpConsumeWisp : SpellAction {
 	override val argc = 1
 
-	override val isGreat = true
-
 	@Suppress("CAST_NEVER_SUCCEEDS")
-	override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+	override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
 		val consumed = args.getEntity(0, argc) as? IMediaEntity<*> ?: throw MishapInvalidIota.ofType(args[0], 0, "consumable_entity")
 
 		ctx.assertEntityInRange(consumed.get())
@@ -37,7 +36,7 @@ object OpConsumeWisp : SpellAction {
 
 		HexalAPI.LOGGER.debug("cost to consume {} is {}", consumed, cost)
 
-		return Triple(
+		return SpellAction.Result(
 			Spell(consumed),
 			cost,
 			listOf(ParticleSpray.burst(consumed.get().position(), 1.0, (ln(10.0) * 14 * ln(consumed.media/10.0 + 1)).toInt()))

@@ -1,9 +1,9 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.casting.iota.EntityIota
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.ListIota
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.getList
 import at.petrak.hexcasting.api.utils.hasByte
@@ -103,7 +103,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 	override fun get() = this
 
-	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level, pos: Vec3, caster: Player, media: Int) : this(entityType, world) {
+	constructor(entityType: EntityType<out BaseCastingWisp>, world: Level, pos: Vec3, caster: Player?, media: Int) : this(entityType, world) {
 		setPos(pos)
 		this.caster = caster
 		@Suppress("LeakingThis")
@@ -143,7 +143,7 @@ abstract class BaseCastingWisp(entityType: EntityType<out BaseCastingWisp>, worl
 
 		// TODO: move all this into BaseWisp
 		if (level.isClientSide) {
-			val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
+			val colouriser = FrozenPigment.fromNBT(entityData.get(COLOURISER)).colorProvider
 			playWispParticles(colouriser)
 			playTrailParticles(colouriser)
 			clientLinkableHolder!!.renderLinks()

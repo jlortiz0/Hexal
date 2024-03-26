@@ -1,11 +1,12 @@
 package ram.talia.hexal.datagen.recipes
 
 import at.petrak.hexcasting.api.advancements.OvercastTrigger
+import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.mod.HexTags
 import at.petrak.hexcasting.common.lib.HexBlocks
 import at.petrak.hexcasting.common.lib.HexItems
 import at.petrak.hexcasting.common.recipe.ingredient.StateIngredientHelper
-import at.petrak.hexcasting.common.recipe.ingredient.VillagerIngredient
+import at.petrak.hexcasting.common.recipe.ingredient.brainsweep.VillagerIngredient
 import at.petrak.hexcasting.datagen.recipe.builders.BrainsweepRecipeBuilder
 import at.petrak.paucal.api.datagen.PaucalRecipeProvider
 import net.minecraft.advancements.critereon.EntityPredicate
@@ -14,6 +15,7 @@ import net.minecraft.data.DataGenerator
 import net.minecraft.data.recipes.FinishedRecipe
 import net.minecraft.data.recipes.ShapedRecipeBuilder
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.entity.npc.VillagerProfession
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Blocks
 import ram.talia.hexal.api.HexalAPI
@@ -54,8 +56,8 @@ class HexalplatRecipes(generator: DataGenerator) : PaucalRecipeProvider(generato
 		)
 
 		BrainsweepRecipeBuilder(StateIngredientHelper.of(Blocks.SHULKER_BOX),
-				VillagerIngredient(ResourceLocation("cartographer"), null, 2),
-				HexalBlocks.MEDIAFIED_STORAGE.defaultBlockState())
+				VillagerIngredient(VillagerProfession.CARTOGRAPHER, null, 2),
+				HexalBlocks.MEDIAFIED_STORAGE.defaultBlockState(), MediaConstants.CRYSTAL_UNIT * 10)
 				.unlockedBy("enlightenment", enlightenment)
 				.save(recipes, modLoc("brainsweep/mediafied_storage"))
 	}

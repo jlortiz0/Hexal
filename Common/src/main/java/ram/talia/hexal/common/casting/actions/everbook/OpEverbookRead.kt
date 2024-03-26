@@ -1,6 +1,7 @@
 package ram.talia.hexal.common.casting.actions.everbook
 
 import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.math.HexPattern
@@ -17,11 +18,7 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 object OpEverbookRead : SpellAction {
 	override val argc = 2
 
-	override val isGreat = true
-	override val alwaysProcessGreatSpell = false
-	override val causesBlindDiversion = false
-
-	override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+	override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
 		val pos = args.getBlockPos(0, argc)
 		val key = args.getPattern(1, argc)
 
@@ -41,7 +38,7 @@ object OpEverbookRead : SpellAction {
 		if (illegalInterworldIota != null)
 			throw MishapIllegalInterworldIota(illegalInterworldIota)
 
-		return Triple(
+		return SpellAction.Result(
 			Spell(record, pos, key, iota),
 			0,
 			listOf()

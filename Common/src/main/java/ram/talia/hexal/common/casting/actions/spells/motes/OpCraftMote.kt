@@ -44,9 +44,9 @@ object OpCraftMote : ConstMediaAction {
     @Suppress("CAST_NEVER_SUCCEEDS")
     override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
         val input = args.getMoteOrList(0, argc) ?: return listOf<Iota>().asActionResult
-        val storage = (ctx as IMixinCastingEnvironment).boundStorage ?: throw MishapNoBoundStorage(ctx.caster.position())
+        val storage = (ctx as IMixinCastingEnvironment).boundStorage ?: throw MishapNoBoundStorage(ctx.caster?.position() ?: ctx.mishapSprayPos())
         if (!MediafiedItemManager.isStorageLoaded(storage))
-            throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
+            throw MishapNoBoundStorage(ctx.caster?.position() ?: ctx.mishapSprayPos(), "storage_unloaded")
 
         val griddedIotas = makeItemIotaCraftingGrid(input)
 

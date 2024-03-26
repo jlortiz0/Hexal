@@ -1,12 +1,15 @@
 package ram.talia.hexal.api.spell.casting
 
-import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
-import at.petrak.hexcasting.api.casting.casting.CastingHarness
+import at.petrak.hexcasting.api.HexAPI
+import at.petrak.hexcasting.api.casting.eval.env.PackagedItemCastEnv
+import at.petrak.hexcasting.api.casting.eval.vm.CastingImage
+import at.petrak.hexcasting.api.casting.eval.vm.CastingVM
 import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.casting.iota.IotaType
+import at.petrak.hexcasting.api.casting.iota.IotaType.isTooLargeToSerialize
 import at.petrak.hexcasting.api.casting.iota.NullIota
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.putCompound
-import at.petrak.hexcasting.common.lib.hex.HexIotaTypes.isTooLargeToSerialize
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.server.MinecraftServer
@@ -117,10 +120,9 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 	 */
 	@Suppress("CAST_NEVER_SUCCEEDS")
 	fun cast(cast: WispCast): WispCastResult {
-		val ctx = CastingEnvironment(
+		val ctx = PackagedItemCastEnv(
 			caster!!,
-			InteractionHand.MAIN_HAND,
-			CastingEnvironment.CastSource.PACKAGED_HEX
+			InteractionHand.MAIN_HAND
 		)
 
 		val wisp = cast.wisp!!
@@ -130,21 +132,25 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 		val mCast = ctx as? IMixinCastingEnvironment
 		mCast?.wisp = wisp
 
-		val harness = CastingHarness(ctx)
+		val ravenmind = CompoundTag()
+		ravenmind.put(HexAPI.RAVENMIND_USERDATA, IotaType.serialize(cast.initialRavenmind.getIota(ctx.world)))
+		val image = CastingImage().copy(stack = cast.initialStack.getIotas(ctx.world), userData = ravenmind)
 
-		harness.stack = cast.initialStack.getIotas(ctx.world).toMutableList()
-		harness.ravenmind = cast.initialRavenmind.getIota(ctx.world)
-
-		val info = harness.executeIotas(cast.hex.getIotas(ctx.world), caster!!.getLevel())
+		val harness = CastingVM(image, ctx)
+		val info = harness.queueExecuteAndWrapIotas(cast.hex.getIotas(ctx.world), caster!!.getLevel())
 
 		// TODO: Make this a mishap
 		// Clear stack if it gets too large
-		var endStack = harness.stack
+		var endStack = harness.image.stack.toMutableList()
 		if (isTooLargeToSerialize(endStack)) {
             endStack = mutableListOf()
         }
 
-		var endRavenmind = harness.ravenmind ?: NullIota()
+		var endRavenmind = if (harness.image.userData.contains(HexAPI.RAVENMIND_USERDATA)) {
+			IotaType.deserialize(harness.image.userData.getCompound(HexAPI.RAVENMIND_USERDATA), ctx.world)
+		} else {
+			NullIota()
+		}
 		if (isTooLargeToSerialize(mutableListOf(endRavenmind))) {
 			endRavenmind = NullIota()
 		}

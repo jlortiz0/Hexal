@@ -1,11 +1,11 @@
 package ram.talia.hexal.interop.patchouli
 
+import at.petrak.hexcasting.api.casting.iota.IotaType
 import at.petrak.hexcasting.api.casting.math.HexCoord
 import at.petrak.hexcasting.api.casting.math.HexPattern
 import at.petrak.hexcasting.api.utils.*
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes
 import at.petrak.hexcasting.common.lib.hex.HexIotaTypes.KEY_DATA
-import at.petrak.hexcasting.common.lib.hex.HexIotaTypes.getTypeFromTag
 import at.petrak.hexcasting.interop.patchouli.AbstractPatternComponent
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.datafixers.util.Pair
@@ -95,7 +95,7 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 
 	// Stolen old DisplayWithMaxWidth code from HexIotaTypes and ListIota since they fit better in the Patchouli book.
 	private fun getDisplayWithMaxWidth(tag: CompoundTag, maxWidth: Int, font: Font): List<FormattedCharSequence> {
-		val type = getTypeFromTag(tag)
+		val type = IotaType.getTypeFromTag(tag)
 				?: return font.split(brokenIota(), maxWidth)
 		val data = tag[KEY_DATA]
 				?: return font.split(brokenIota(), maxWidth)
@@ -117,7 +117,7 @@ class EverbookPatternComponent : AbstractPatternComponent() {
 		for (i in 0 until listTag.size) {
 			val subtag = listTag[i]
 			val cSubtag = subtag.downcast(CompoundTag.TYPE)
-			val translation = HexIotaTypes.getDisplay(cSubtag)
+			val translation = IotaType.getDisplay(cSubtag)
 			var currentElement = translation.visualOrderText
 			val addl = if (i < listTag.size - 1) {
 				", "

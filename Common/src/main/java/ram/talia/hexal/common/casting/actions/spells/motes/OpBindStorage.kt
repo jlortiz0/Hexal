@@ -2,7 +2,8 @@ package ram.talia.hexal.common.casting.actions.spells.motes
 
 import at.petrak.hexcasting.api.casting.ParticleSpray
 import at.petrak.hexcasting.api.casting.RenderedSpell
-import at.petrak.hexcasting.api.casting.SpellAction
+
+import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.getBlockPos
 import at.petrak.hexcasting.api.casting.iota.Iota
@@ -12,6 +13,7 @@ import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment
+import ram.talia.hexal.api.spell.mishaps.MishapNonPlayer
 import ram.talia.hexal.common.blocks.BlockMediafiedStorage
 import ram.talia.hexal.common.blocks.entity.BlockEntityMediafiedStorage
 import ram.talia.hexal.xplat.IXplatAbstractions
@@ -19,14 +21,15 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 class OpBindStorage(val isTemporaryBinding: Boolean) : SpellAction {
     override val argc = 1
 
-    override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
         val pos = args.getBlockPos(0, argc)
 
-        ctx.assertVecInRange(pos)
+        ctx.assertPosInRange(pos)
+        ctx.caster ?: throw MishapNonPlayer()
 
         val storage = ctx.world.getBlockState(pos).block
 
-        return Triple(
+        return SpellAction.Result(
             Spell(if (storage is BlockMediafiedStorage) pos else null, isTemporaryBinding),
             if (isTemporaryBinding) HexalConfig.server.bindTemporaryStorageCost else HexalConfig.server.bindStorageCost,
             listOf(ParticleSpray.burst(Vec3.atCenterOf(pos), 1.5))
@@ -37,7 +40,7 @@ class OpBindStorage(val isTemporaryBinding: Boolean) : SpellAction {
     private data class Spell(val pos: BlockPos?, val isTemporaryBinding: Boolean) : RenderedSpell {
         override fun cast(ctx: CastingEnvironment) {
             if (pos == null) {
-                MediafiedItemManager.setBoundStorage(ctx.caster, null)
+                MediafiedItemManager.setBoundStorage(ctx.caster!!, null)
                 return
             }
 
@@ -49,7 +52,7 @@ class OpBindStorage(val isTemporaryBinding: Boolean) : SpellAction {
             if (isTemporaryBinding)
                 (ctx as IMixinCastingEnvironment).setTemporaryBoundStorage(storage.uuid)
             else
-                MediafiedItemManager.setBoundStorage(ctx.caster, storage.uuid)
+                MediafiedItemManager.setBoundStorage(ctx.caster!!, storage.uuid)
         }
     }
 }

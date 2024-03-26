@@ -27,7 +27,7 @@ open class ProjectileWisp : BaseCastingWisp {
 	constructor(entityType: EntityType<out ProjectileWisp>, world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(entityType, world, pos, caster, media) {
 		deltaMovement = vel
 	}
-	constructor(world: Level, pos: Vec3, vel: Vec3, caster: Player, media: Int) : super(HexalEntities.PROJECTILE_WISP, world, pos, caster, media) {
+	constructor(world: Level, pos: Vec3, vel: Vec3, caster: Player?, media: Int) : super(HexalEntities.PROJECTILE_WISP, world, pos, caster, media) {
 		deltaMovement = vel
 	}
 
@@ -43,7 +43,7 @@ open class ProjectileWisp : BaseCastingWisp {
 	}
 
 	// Seon wisps have the same max range as the caster.
-	override fun maxSqrCastingDistance() = if (seon) { Action.MAX_DISTANCE * Action.MAX_DISTANCE } else { CASTING_RADIUS * CASTING_RADIUS }
+	override fun maxSqrCastingDistance() = if (seon) { Action.RAYCAST_DISTANCE * Action.RAYCAST_DISTANCE } else { CASTING_RADIUS * CASTING_RADIUS }
 
 	fun getHitResult(start: Vec3, end: Vec3): BlockHitResult = level.clip(ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this))
 

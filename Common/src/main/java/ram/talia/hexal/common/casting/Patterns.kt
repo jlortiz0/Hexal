@@ -2,8 +2,9 @@
 
 package ram.talia.hexal.common.casting
 
-import at.petrak.hexcasting.api.PatternRegistry
+import at.petrak.hexcasting.api.casting.ActionRegistryEntry
 import at.petrak.hexcasting.api.casting.castables.Action
+import at.petrak.hexcasting.api.casting.castables.SpecialHandler
 import at.petrak.hexcasting.api.casting.iota.DoubleIota
 import at.petrak.hexcasting.api.casting.iota.PatternIota
 import at.petrak.hexcasting.api.casting.iota.Vec3Iota
@@ -21,10 +22,12 @@ import ram.talia.hexal.common.casting.actions.everbook.*
 import ram.talia.hexal.common.casting.actions.spells.*
 import ram.talia.hexal.common.casting.actions.spells.gates.*
 import ram.talia.hexal.common.casting.actions.spells.great.*
-import ram.talia.hexal.common.casting.actions.spells.motes.*
 import ram.talia.hexal.common.casting.actions.spells.link.*
+import ram.talia.hexal.common.casting.actions.spells.motes.*
 import ram.talia.hexal.common.casting.actions.spells.wisp.*
 import ram.talia.hexal.common.entities.BaseWisp
+import java.util.function.BiConsumer
+
 
 object Patterns {
 
@@ -33,19 +36,18 @@ object Patterns {
 	@JvmField
 	var PER_WORLD_PATTERNS: MutableList<Triple<HexPattern, ResourceLocation, Action>> = ArrayList()
 	@JvmField
-	val SPECIAL_HANDLERS: MutableList<Pair<ResourceLocation, PatternRegistry.SpecialHandler>> = ArrayList()
+	val SPECIAL_HANDLERS: MutableList<Pair<ResourceLocation, SpecialHandler.Factory<*>>> = ArrayList()
 
 	@JvmStatic
-	fun registerPatterns() {
-		try {
-			for ((pattern, location, action) in PATTERNS)
-				PatternRegistry.mapPattern(pattern, location, action)
-			for ((pattern, location, action) in PER_WORLD_PATTERNS)
-				PatternRegistry.mapPattern(pattern, location, action, true)
-			for ((location, handler) in SPECIAL_HANDLERS)
-				PatternRegistry.addSpecialHandler(location, handler)
-		} catch (e: PatternRegistry.RegisterPatternException) {
-			e.printStackTrace()
+	fun register(r: BiConsumer<ActionRegistryEntry, ResourceLocation>) {
+		for ((pattern, location, action) in PATTERNS) {
+			r.accept(ActionRegistryEntry(pattern, action), location)
+		}
+	}
+
+	fun registerSpecial(r: BiConsumer<SpecialHandler.Factory<*>, ResourceLocation>) {
+		for ((location, handler) in SPECIAL_HANDLERS) {
+			r.accept(handler, location)
 		}
 	}
 
@@ -71,8 +73,6 @@ object Patterns {
 	// ========================== Misc Info Gathering =================================
 	@JvmField
 	val CURRENT_TICK = make(fromAngles("ddwaa", NORTH_WEST), modLoc("current_tick"), OpCurrentTick)
-	@JvmField
-	val REMAINING_EVALS = make(fromAngles("qqaed", SOUTH_EAST), modLoc("remaining_evals"), OpRemainingEvals)
 	@JvmField
 	val BREATH = make(fromAngles("aqawdwaqawd", NORTH_WEST), modLoc("breath"), OpGetBreath)
 	@JvmField
@@ -282,17 +282,15 @@ object Patterns {
 	@JvmField
 	val CONSUME_WISP = make(fromAngles("wawqwawwwewwwewwwawqwawwwewwwewdeaweewaqaweewaawwww", NORTH_WEST),
 			modLoc("wisp/consume"),
-			OpConsumeWisp,
-			true)
+			OpConsumeWisp)
 	@JvmField
 	val WISP_SEON_SET = make(fromAngles("aqweewqaeaqweewqaqwww", SOUTH_WEST),
 			modLoc("wisp/seon/set"),
-			OpSeonWispSet,
-			true)
+			OpSeonWispSet)
 	@JvmField
-	val TICK = make(fromAngles("wwwdwdwwwawqqeqwqqwqeqwqq", SOUTH_EAST), modLoc("tick"), OpTick, true)
+	val TICK = make(fromAngles("wwwdwdwwwawqqeqwqqwqeqwqq", SOUTH_EAST), modLoc("tick"), OpTick)
 	@JvmField
-	val GATE_MAKE = make(fromAngles("qwqwqwqwqwqqeaeaeaeaeae", WEST), modLoc("gate/make"), OpMakeGate, true)
+	val GATE_MAKE = make(fromAngles("qwqwqwqwqwqqeaeaeaeaeae", WEST), modLoc("gate/make"), OpMakeGate)
 
 	// ================================ Special Handlers =======================================
 //	@JvmField
@@ -300,16 +298,13 @@ object Patterns {
 //		return@make Action.makeConstantOp(StringIota("example! $pat"))
 //	}
 
-	fun make (pattern: HexPattern, location: ResourceLocation, operator: Action, isPerWorld: Boolean = false): PatternIota {
+	fun make (pattern: HexPattern, location: ResourceLocation, operator: Action): PatternIota {
 		val triple = Triple(pattern, location, operator)
-		if (isPerWorld)
-			PER_WORLD_PATTERNS.add(triple)
-		else
-			PATTERNS.add(triple)
+		PATTERNS.add(triple)
 		return PatternIota(pattern)
 	}
 
-	fun make (location: ResourceLocation, specialHandler: PatternRegistry.SpecialHandler): Pair<ResourceLocation, PatternRegistry.SpecialHandler> {
+	fun make (location: ResourceLocation, specialHandler: SpecialHandler.Factory<*>): Pair<ResourceLocation, SpecialHandler.Factory<*>> {
 		val pair = location to specialHandler
 		SPECIAL_HANDLERS.add(pair)
 		return pair

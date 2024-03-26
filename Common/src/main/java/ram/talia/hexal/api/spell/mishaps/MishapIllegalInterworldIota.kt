@@ -1,24 +1,24 @@
 package ram.talia.hexal.api.spell.mishaps
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.casting.asActionResult
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.GarbageIota
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.ListIota
 import at.petrak.hexcasting.api.casting.mishaps.Mishap
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.DyeColor
 import ram.talia.hexal.api.spell.iota.GateIota
 import ram.talia.hexal.api.spell.iota.MoteIota
 
 class MishapIllegalInterworldIota(val iota: Iota) : Mishap() {
-    override fun accentColor(ctx: CastingEnvironment, errorCtx: Context): FrozenColorizer = dyeColor(DyeColor.GREEN)
+    override fun accentColor(ctx: CastingEnvironment, errorCtx: Context): FrozenPigment = dyeColor(DyeColor.GREEN)
 
     override fun errorMessage(ctx: CastingEnvironment, errorCtx: Context): Component = error("illegal_interworld_iota", iota.display())
 
     override fun execute(ctx: CastingEnvironment, errorCtx: Context, stack: MutableList<Iota>) {
-        ctx.caster.health /= 2 // Bad but better than freaking TODO()
+        ctx.mishapEnvironment.damage(0.5f)
     }
 
     companion object {

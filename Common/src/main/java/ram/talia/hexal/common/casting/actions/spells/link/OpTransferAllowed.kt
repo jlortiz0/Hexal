@@ -1,10 +1,12 @@
 package ram.talia.hexal.common.casting.actions.spells.link
 
 import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment
+import ram.talia.hexal.api.spell.mishaps.MishapNoLinked
 import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
 import ram.talia.hexal.common.entities.BaseCastingWisp
 
@@ -12,14 +14,14 @@ class OpTransferAllowed(val setAllowed: Boolean) : SpellAction {
     override val argc = 1
 
     @Suppress("CAST_NEVER_SUCCEEDS")
-    override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>>? {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
         val mCast = ctx as? IMixinCastingEnvironment
         val wispThis = mCast?.wisp ?: throw MishapNoWisp()
 
         val otherIndex = args.getPositiveIntUnder(0, OpSendIota.argc, wispThis.numLinked())
-        val other = wispThis.getLinked(otherIndex) ?: return null
+        val other = wispThis.getLinked(otherIndex) ?: throw MishapNoLinked(wispThis)
 
-        return Triple(
+        return SpellAction.Result(
             Spell(wispThis, other, setAllowed),
             0,
             listOf()

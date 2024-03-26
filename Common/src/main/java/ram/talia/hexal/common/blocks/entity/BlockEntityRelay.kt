@@ -1,9 +1,9 @@
 package ram.talia.hexal.common.blocks.entity
 
 import at.petrak.hexcasting.api.block.HexBlockEntity
-import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.casting.asActionResult
 import at.petrak.hexcasting.api.casting.iota.Iota
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import at.petrak.hexcasting.api.utils.asCompound
 import at.petrak.hexcasting.api.utils.getList
 import at.petrak.hexcasting.api.utils.putCompound
@@ -51,7 +51,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
     private val nonRelaysLinkedDirectly: LazyILinkableSet = LazyILinkableSet()
     private var mediaExchangersLinkedDirectly: LazyILinkableSet = LazyILinkableSet()
 
-    fun setColouriser(colorizer: FrozenColorizer, level: Level) = relayNetwork.setColouriser(colorizer, level.gameTime)
+    fun setColouriser(colorizer: FrozenPigment, level: Level) = relayNetwork.setColouriser(colorizer, level.gameTime)
 
     fun serverTick() {
          checkLinks()
@@ -249,7 +249,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
         return Vec3.atCenterOf(pos) + getBobberPosition()
     }
 
-    override fun colouriser(): FrozenColorizer = relayNetwork.colouriser
+    override fun colouriser(): FrozenPigment = relayNetwork.colouriser
 
     //endregion
 
@@ -284,7 +284,7 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
     override fun loadModData(tag: CompoundTag) {
         HexalAPI.LOGGER.info("loading $tag at $pos on $level")
         if (tag.contains(TAG_COLOURISER))
-            relayNetwork.colouriser = FrozenColorizer.fromNBT(tag.getCompound(TAG_COLOURISER))
+            relayNetwork.colouriser = FrozenPigment.fromNBT(tag.getCompound(TAG_COLOURISER))
         if (tag.contains(TAG_COLOURISER_TIME))
             relayNetwork.timeColouriserSet = tag.getLong(TAG_COLOURISER_TIME)
         if (tag.contains(TAG_LINKABLE_HOLDER))
@@ -388,9 +388,9 @@ class BlockEntityRelay(pos: BlockPos, val state: BlockState) : HexBlockEntity(He
             }
 
         var timeColouriserSet = 0L
-        var colouriser: FrozenColorizer = FrozenColorizer(HexItems.DYE_COLORIZERS[DyeColor.PURPLE]?.let { ItemStack(it) }, Util.NIL_UUID)
+        var colouriser: FrozenPigment = FrozenPigment(HexItems.DYE_PIGMENTS[DyeColor.PURPLE]?.let { ItemStack(it) }, Util.NIL_UUID)
 
-        fun setColouriser(colorizer: FrozenColorizer, time: Long) {
+        fun setColouriser(colorizer: FrozenPigment, time: Long) {
             colouriser = colorizer
             timeColouriserSet = time
             root.sync()

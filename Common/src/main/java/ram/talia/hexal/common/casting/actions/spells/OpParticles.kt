@@ -2,7 +2,7 @@ package ram.talia.hexal.common.casting.actions.spells
 
 import at.petrak.hexcasting.api.casting.ParticleSpray
 import at.petrak.hexcasting.api.casting.RenderedSpell
-import at.petrak.hexcasting.api.casting.SpellAction
+import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import com.mojang.datafixers.util.Either
@@ -16,13 +16,13 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 object OpParticles : SpellAction {
     override val argc = 1
 
-    override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
         val loc = args.getVec3OrListVec3(0, argc)
 
         // assert all locs in ambit.
         loc.map({ ctx.assertVecInRange(it) }, { ctx.assertVecListInRange(it, 32.0) })
 
-        return Triple(
+        return SpellAction.Result(
                 Spell(loc),
                 loc.map({ HexalConfig.server.particlesCost }, { it.size * HexalConfig.server.particlesCost }),
                 listOf()
@@ -31,7 +31,7 @@ object OpParticles : SpellAction {
 
     data class Spell(val loc: Either<Vec3, List<Vec3>>) : RenderedSpell {
         override fun cast(ctx: CastingEnvironment) {
-            val colouriser = at.petrak.hexcasting.xplat.IXplatAbstractions.INSTANCE.getColorizer(ctx.caster)
+            val colouriser = at.petrak.hexcasting.xplat.IXplatAbstractions.INSTANCE.getPigment(ctx.caster)
 
             loc.map({
                 IXplatAbstractions.INSTANCE.sendPacketNear(it, 128.0, ctx.world, MsgSingleParticleAck(it, colouriser))

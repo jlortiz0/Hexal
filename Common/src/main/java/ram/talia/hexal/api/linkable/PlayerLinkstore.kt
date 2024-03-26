@@ -42,7 +42,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable {
 	}
 	//endregion
 
-	override fun maxSqrLinkRange() = Action.MAX_DISTANCE * Action.MAX_DISTANCE
+	override fun maxSqrLinkRange() = Action.RAYCAST_DISTANCE * Action.RAYCAST_DISTANCE
 
 	override fun getLinkableType(): LinkableRegistry.LinkableType<PlayerLinkstore, *> = LinkableTypes.PLAYER_LINKSTORE_TYPE
 
@@ -82,7 +82,7 @@ class PlayerLinkstore(val player: ServerPlayer) : ILinkable {
 
 		override fun shouldRemove() = player.isRemoved && player.removalReason?.shouldDestroy() == true
 
-		override fun colouriser() = at.petrak.hexcasting.xplat.IXplatAbstractions.INSTANCE.getColorizer(player)
+		override fun colouriser() = at.petrak.hexcasting.xplat.IXplatAbstractions.INSTANCE.getPigment(player)
 
 		override fun getLinkableType() = LinkableTypes.PLAYER_LINKSTORE_TYPE
 	}

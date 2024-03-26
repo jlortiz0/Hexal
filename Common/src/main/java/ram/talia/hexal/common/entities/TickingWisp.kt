@@ -76,7 +76,7 @@ class TickingWisp : BaseCastingWisp {
 		setTargetMovePos(pos)
 	}
 
-	constructor(world: Level, pos: Vec3, caster: Player, media: Int) : super(HexalEntities.TICKING_WISP, world, pos, caster, media) {
+	constructor(world: Level, pos: Vec3, caster: Player?, media: Int) : super(HexalEntities.TICKING_WISP, world, pos, caster, media) {
 		setTargetMovePos(pos)
 	}
 
@@ -155,7 +155,7 @@ class TickingWisp : BaseCastingWisp {
 	}
 
 	// Seon wisps have the same max range as the caster.
-	override fun maxSqrCastingDistance() = if (seon) { Action.MAX_DISTANCE * Action.MAX_DISTANCE } else { CASTING_RADIUS * CASTING_RADIUS }
+	override fun maxSqrCastingDistance() = if (seon) { Action.RAYCAST_DISTANCE * Action.RAYCAST_DISTANCE } else { CASTING_RADIUS * CASTING_RADIUS }
 
 	override fun castCallback(result: WispCastingManager.WispCastResult) {
 //		HexalAPI.LOGGER.info("ticking wisp $uuid had a cast successfully completed!")

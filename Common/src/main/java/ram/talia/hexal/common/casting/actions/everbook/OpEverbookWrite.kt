@@ -1,6 +1,7 @@
 package ram.talia.hexal.common.casting.actions.everbook
 
 import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.NullIota
@@ -13,10 +14,6 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 
 object OpEverbookWrite : ConstMediaAction {
 	override val argc = 2
-
-	override val isGreat = true
-	override val alwaysProcessGreatSpell = false
-	override val causesBlindDiversion = false
 
 	override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
 		val pos = args.getBlockPos(0, argc)

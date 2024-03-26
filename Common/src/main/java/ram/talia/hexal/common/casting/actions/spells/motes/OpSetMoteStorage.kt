@@ -21,7 +21,7 @@ object OpSetMoteStorage : ConstMediaAction {
         val item = args.getMote(0, argc) ?: return null.asActionResult
         val storagePos = args.getBlockPos(1, argc)
 
-        ctx.assertVecInRange(storagePos)
+        ctx.assertPosInRange(storagePos)
 
         if (!ctx.canEditBlockAt(storagePos) || !IXplatAbstractions.INSTANCE.isInteractingAllowed(ctx.world, storagePos, Direction.UP, ctx.castingHand, ctx.caster))
             return listOf(item)

@@ -1,14 +1,13 @@
 package ram.talia.hexal.common.casting.actions.spells.gates
 
 import at.petrak.hexcasting.api.mod.HexTags
-import at.petrak.hexcasting.api.casting.castables.Action
 import at.petrak.hexcasting.api.casting.ParticleSpray
 import at.petrak.hexcasting.api.casting.RenderedSpell
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.getVec3
 import at.petrak.hexcasting.api.casting.iota.Iota
-import at.petrak.hexcasting.api.casting.mishaps.MishapLocationTooFarAway
-import at.petrak.hexcasting.common.network.MsgBlinkAck
+import at.petrak.hexcasting.api.casting.mishaps.MishapBadLocation
+import at.petrak.hexcasting.common.msgs.MsgBlinkS2C
 import at.petrak.hexcasting.xplat.IXplatAbstractions
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Entity
@@ -40,7 +39,7 @@ object OpCloseGate : VarargSpellAction {
             ctx.assertVecInRange(targetPos)
 
         if (!ctx.isVecInWorld(targetPos.subtract(0.0, 1.0, 0.0)))
-            throw MishapLocationTooFarAway(targetPos, "too_close_to_out")
+            throw MishapBadLocation(targetPos, "too_close_to_out")
 
         val gatees = gate.getMarked(ctx.world)
         gate.clearMarked()
@@ -80,7 +79,7 @@ object OpCloseGate : VarargSpellAction {
                 teleportRespectSticky(teleportee, allTeleportees, delta)
             }
 
-            if (teleportee is ServerPlayer && teleportee == ctx.caster && distance < Action.MAX_DISTANCE && dropItems) {
+            if (teleportee is ServerPlayer && teleportee == ctx.caster && dropItems) {
                 // Drop items conditionally, based on distance teleported.
                 // MOST IMPORTANT: Never drop main hand item, since if it's a trinket, it will get duplicated later.
 
@@ -144,7 +143,7 @@ object OpCloseGate : VarargSpellAction {
 
         for (player in playersToUpdate) {
             player.connection.resetPosition()
-            IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, MsgBlinkAck(delta))
+            IXplatAbstractions.INSTANCE.sendPacketToPlayer(player, MsgBlinkS2C(delta))
         }
     }
 }

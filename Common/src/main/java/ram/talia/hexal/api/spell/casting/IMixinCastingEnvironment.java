@@ -11,8 +11,6 @@ public interface IMixinCastingEnvironment {
 	@Nullable BaseCastingWisp setWisp(@Nullable BaseCastingWisp wisp);
 	
 	boolean hasWisp();
-	
-	int remainingDepth();
 
 	int getConsumedMedia();
 

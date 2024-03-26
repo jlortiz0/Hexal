@@ -11,6 +11,7 @@ object OpTypeItemHeld : ConstMediaAction {
     override val argc = 0
 
     override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
-        return ctx.getHeldItemToOperateOn { it.item != Items.AIR }.first().item.takeUnless { it == Items.AIR }?.asActionResult ?: null.asActionResult
+        return ctx.getHeldItemToOperateOn { it.item != Items.AIR }?.takeUnless { it.stack?.item == Items.AIR }?.stack?.item?.asActionResult
+            ?: null.asActionResult
     }
 }

@@ -23,8 +23,8 @@ fun playLinkParticles(source: IRenderCentre, sink: IRenderCentre, random: Random
 		ParticleStatus.MINIMAL -> 0.5
 	}
 
-	val sourceColouriser = source.colouriser()
-	val sinkColouriser = sink.colouriser()
+	val sourceColouriser = source.colouriser().colorProvider
+	val sinkColouriser = sink.colouriser().colorProvider
 
 	for (i in 0 until dist.toInt()) {
 		val coeff = (i / dist) + (level.gameTime % 20) / (20 * dist)
@@ -32,7 +32,7 @@ fun playLinkParticles(source: IRenderCentre, sink: IRenderCentre, random: Random
 		val colour: Int = if (random.nextBeta(15, 15) < coeff) sinkColouriser.nextColour(random) else sourceColouriser.nextColour(random)
 
 		level.addParticle(
-			ConjureParticleOptions(colour, false),
+			ConjureParticleOptions(colour),
 			(sourceCentre.x + delta.x * coeff),
 			(sourceCentre.y + delta.y * coeff),
 			(sourceCentre.z + delta.z * coeff),

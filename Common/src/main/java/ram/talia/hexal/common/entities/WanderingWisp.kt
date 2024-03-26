@@ -1,9 +1,9 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.MediaConstants
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.iota.NullIota
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import com.mojang.datafixers.util.Either
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.syncher.EntityDataAccessor
@@ -71,7 +71,7 @@ class WanderingWisp(entityType: EntityType<out WanderingWisp>, level: Level) : B
 		move()
 
 		if (level.isClientSide) {
-			val colouriser = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
+			val colouriser = FrozenPigment.fromNBT(entityData.get(COLOURISER)).colorProvider
 			playWispParticles(colouriser)
 			playTrailParticles(colouriser)
 			clientLinkableHolder!!.renderLinks()

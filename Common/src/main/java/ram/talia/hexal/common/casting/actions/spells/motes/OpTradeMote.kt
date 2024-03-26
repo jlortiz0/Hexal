@@ -2,12 +2,13 @@ package ram.talia.hexal.common.casting.actions.spells.motes
 
 import at.petrak.hexcasting.api.casting.asActionResult
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.getEntity
 import at.petrak.hexcasting.api.casting.getPositiveIntUnder
-import at.petrak.hexcasting.api.casting.getVillager
 import at.petrak.hexcasting.api.casting.iota.DoubleIota
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import net.minecraft.stats.Stats
+import net.minecraft.world.entity.npc.Villager
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.trading.MerchantOffer
 import net.minecraft.world.item.trading.MerchantOffers
@@ -34,7 +35,7 @@ object OpTradeMote : VarargConstMediaAction {
 
     @Suppress("CAST_NEVER_SUCCEEDS")
     override fun execute(args: List<Iota>, argc: Int, ctx: CastingEnvironment): List<Iota> {
-        val villager = args.getVillager(0, argc)
+        val villager = args.getEntity(0, argc) as? Villager ?: throw MishapInvalidIota.ofType(args[0], args.size - 1,"class.entity.villager")
         val toTradeItemIotas = args.getMoteOrMoteList(1, argc)?.map({ listOf(it) }, { it }) ?: return emptyList<Iota>().asActionResult
         val tradeIndex = if (args.size == 3) args.getPositiveIntUnder(2, villager.offers.size, argc) else null
 
@@ -52,19 +53,19 @@ object OpTradeMote : VarargConstMediaAction {
 
         ctx.assertEntityInRange(villager)
 
-        val storage = (ctx as IMixinCastingEnvironment).boundStorage ?: throw MishapNoBoundStorage(ctx.caster.position())
+        val storage = (ctx as IMixinCastingEnvironment).boundStorage ?: throw MishapNoBoundStorage(ctx.caster?.position() ?: ctx.mishapSprayPos())
         if (!MediafiedItemManager.isStorageLoaded(storage))
-            throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
+            throw MishapNoBoundStorage(ctx.caster?.position() ?: ctx.mishapSprayPos(), "storage_unloaded")
 
         val isFull = MediafiedItemManager.isStorageFull(storage) ?: return null.asActionResult
         if (isFull)
-            throw MishapStorageFull(ctx.caster.position())
+            throw MishapStorageFull(ctx.caster?.position() ?: ctx.mishapSprayPos())
 
 
         if (villager.offers.isEmpty())
             return emptyList<Iota>().asActionResult
 
-        villager.updateSpecialPrices(ctx.caster)
+        ctx.caster?.let { villager.updateSpecialPrices(it) }
         villager.tradingPlayer = ctx.caster
 
         var outRecord: ItemRecord? = null
@@ -84,7 +85,7 @@ object OpTradeMote : VarargConstMediaAction {
 
             if (merchantoffer.take(toTrade0, toTrade1) || merchantoffer.take(toTrade0, toTrade1)) {
                 villager.notifyTrade(merchantoffer)
-                ctx.caster.awardStat(Stats.TRADED_WITH_VILLAGER)
+                ctx.caster?.awardStat(Stats.TRADED_WITH_VILLAGER)
 
                 if (outRecord == null)
                     outRecord = ItemRecord(merchantoffer.result)

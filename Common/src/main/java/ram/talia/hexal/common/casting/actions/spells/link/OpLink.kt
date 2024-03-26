@@ -1,10 +1,11 @@
 package ram.talia.hexal.common.casting.actions.spells.link
 
 import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
-import at.petrak.hexcasting.api.casting.mishaps.MishapLocationTooFarAway
+import at.petrak.hexcasting.api.casting.mishaps.MishapBadLocation
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.linkable.ILinkable
 import ram.talia.hexal.api.linkable.LinkableRegistry
@@ -13,7 +14,7 @@ import ram.talia.hexal.api.spell.mishaps.MishapLinkToSelf
 object OpLink : SpellAction {
 	override val argc = 1
 
-	override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+	override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
 		val linkThis = LinkableRegistry.linkableFromCastingEnvironment(ctx)
 
 		val linkOther = LinkableRegistry.linkableFromIota(args[0], ctx.world)
@@ -25,9 +26,9 @@ object OpLink : SpellAction {
 		ctx.assertVecInRange(linkOther.getPosition())
 
 		if (!linkThis.isInRange(linkOther))
-			throw MishapLocationTooFarAway(linkOther.getPosition())
+			throw MishapBadLocation(linkOther.getPosition())
 
-		return Triple(
+		return SpellAction.Result(
 			Spell(linkThis, linkOther),
 			HexalConfig.server.linkCost,
 			listOf(ParticleSpray.burst(linkOther.getPosition(), 1.5))

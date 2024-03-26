@@ -1,9 +1,9 @@
 package ram.talia.hexal.api.spell.mishaps
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.Mishap
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.item.ItemEntity
@@ -16,7 +16,7 @@ import ram.talia.hexal.api.spell.iota.MoteIota
 
 @Suppress("CAST_NEVER_SUCCEEDS")
 class MishapStorageFull(val position: Vec3) : Mishap() {
-    override fun accentColor(ctx: CastingEnvironment, errorCtx: Context): FrozenColorizer = dyeColor(DyeColor.RED)
+    override fun accentColor(ctx: CastingEnvironment, errorCtx: Context): FrozenPigment = dyeColor(DyeColor.RED)
 
     override fun errorMessage(ctx: CastingEnvironment, errorCtx: Context): Component = error("full_storage")
 

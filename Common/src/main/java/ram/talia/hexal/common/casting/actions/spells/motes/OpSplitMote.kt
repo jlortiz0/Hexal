@@ -22,9 +22,9 @@ object OpSplitMote : ConstMediaAction {
 
         val storage = (ctx as IMixinCastingEnvironment).boundStorage ?: item.itemIndex.storage
         if (!MediafiedItemManager.isStorageLoaded(storage))
-            throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
+            throw MishapNoBoundStorage(ctx.caster?.position() ?: ctx.mishapSprayPos(), "storage_unloaded")
         if (MediafiedItemManager.isStorageFull(storage) != false) // if this is somehow null we should still throw an error here, things have gone pretty wrong
-            throw MishapStorageFull(ctx.caster.position())
+            throw MishapStorageFull(ctx.caster?.position() ?: ctx.mishapSprayPos())
 
         val split = item.splitOff(toSplitOff, storage) ?: return listOf(item.copy(), NullIota())
         return listOf(item.copy(), split.copy())

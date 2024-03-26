@@ -1,7 +1,8 @@
 package ram.talia.hexal.common.entities
 
-import at.petrak.hexcasting.api.misc.FrozenColorizer
 import at.petrak.hexcasting.api.misc.MediaConstants
+import at.petrak.hexcasting.api.pigment.ColorProvider
+import at.petrak.hexcasting.api.pigment.FrozenPigment
 import at.petrak.hexcasting.api.utils.putCompound
 import at.petrak.hexcasting.common.particles.ConjureParticleOptions
 import net.minecraft.client.Minecraft
@@ -33,7 +34,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 
 	override fun get() = this
 
-	override fun colouriser() = FrozenColorizer.fromNBT(entityData.get(COLOURISER))
+	override fun colouriser() = FrozenPigment.fromNBT(entityData.get(COLOURISER))
 
 	override fun getEyeHeight(pose: Pose, dim: EntityDimensions) = 0f
 
@@ -69,10 +70,10 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 	override fun renderCentre(other: ILinkable.IRenderCentre, recursioning: Boolean): Vec3 = renderCentre()
 
 	fun playTrailParticles() {
-		playTrailParticles(colouriser())
+		playTrailParticles(colouriser().colorProvider)
 	}
 
-	protected open fun playWispParticles(colouriser: FrozenColorizer) {
+	protected open fun playWispParticles(colouriser: ColorProvider) {
 		val radius = (media.toDouble() / MediaConstants.DUST_UNIT).pow(1.0 / 3) / 100
 
 		val repeats = when (Minecraft.getInstance().options.particles().get() as ParticleStatus) {
@@ -85,7 +86,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 			val colour: Int = colouriser.nextColour(random)
 
 			level.addParticle(
-				ConjureParticleOptions(colour, true),
+				ConjureParticleOptions(colour),
 				(renderCentre().x + radius*random.nextGaussian()),
 				(renderCentre().y + radius*random.nextGaussian()),
 				(renderCentre().z + radius*random.nextGaussian()),
@@ -96,7 +97,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		}
 	}
 
-	protected open fun playTrailParticles(colouriser: FrozenColorizer) {
+	protected open fun playTrailParticles(colouriser: ColorProvider) {
 		val radius = ceil((media.toDouble() / MediaConstants.DUST_UNIT).pow(1.0 / 3) / 10)
 
 		val delta = oldPos - position()
@@ -107,7 +108,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 
 			val coeff = i / dist
 			level.addParticle(
-				ConjureParticleOptions(colour, false),
+				ConjureParticleOptions(colour),
 				(renderCentre().x + delta.x * coeff),
 				(renderCentre().y + delta.y * coeff),
 				(renderCentre().z + delta.z * coeff),
@@ -118,7 +119,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 		}
 	}
 
-	fun setColouriser(colouriser: FrozenColorizer) {
+	fun setColouriser(colouriser: FrozenPigment) {
 		entityData.set(COLOURISER, colouriser.serializeToNBT())
 	}
 
@@ -140,7 +141,7 @@ abstract class BaseWisp(entityType: EntityType<out BaseWisp>, world: Level)  : L
 	}
 
 	override fun defineSynchedData() {
-		entityData.define(COLOURISER, FrozenColorizer.DEFAULT.get().serializeToNBT())
+		entityData.define(COLOURISER, FrozenPigment.DEFAULT.get().serializeToNBT())
 		entityData.define(MEDIA, 20 * MediaConstants.DUST_UNIT)
 	}
 

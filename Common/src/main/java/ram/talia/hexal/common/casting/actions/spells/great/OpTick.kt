@@ -4,7 +4,8 @@ package ram.talia.hexal.common.casting.actions.spells.great
 
 import at.petrak.hexcasting.api.casting.ParticleSpray
 import at.petrak.hexcasting.api.casting.RenderedSpell
-import at.petrak.hexcasting.api.casting.SpellAction
+import at.petrak.hexcasting.api.casting.castables.SpellAction
+
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.getBlockPos
 import at.petrak.hexcasting.api.casting.iota.Iota
@@ -27,15 +28,15 @@ object OpTick : SpellAction {
         return HexalConfig.server.tickConstantCost + HexalConfig.server.tickCostPerTicked * timesTicked
     }
 
-    override fun execute(args: List<Iota>, ctx: CastingEnvironment): Triple<RenderedSpell, Int, List<ParticleSpray>> {
+    override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
         val pos = args.getBlockPos(0, argc)
         val ictx = ctx as IMixinCastingEnvironment
 
-        ctx.assertVecInRange(pos)
+        ctx.assertPosInRange(pos)
 
         val cost = costFromTimesTicked(ictx.getTimesTicked(pos))
 
-        return Triple(
+        return SpellAction.Result(
                 Spell(pos),
                 cost,
                 listOf(ParticleSpray.cloud(Vec3.atCenterOf(pos), 1.0, 5))

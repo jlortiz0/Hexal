@@ -17,11 +17,13 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.Vec3
 import ram.talia.hexal.api.config.HexalConfig
+import ram.talia.hexal.api.fakes.FakePlayerFactory
 import ram.talia.hexal.api.getMote
 import ram.talia.hexal.api.mediafieditems.MediafiedItemManager
 import ram.talia.hexal.api.spell.VarargSpellAction
 import ram.talia.hexal.api.spell.iota.MoteIota
 import ram.talia.hexal.api.spell.mishaps.MishapNoBoundStorage
+import ram.talia.hexal.api.spell.mishaps.MishapNonPlayer
 
 object OpUseMoteOn : VarargSpellAction {
     override fun argc(stack: List<Iota>): Int {
@@ -46,7 +48,7 @@ object OpUseMoteOn : VarargSpellAction {
 
             val storage = item.itemIndex.storage
             if (!MediafiedItemManager.isStorageLoaded(storage))
-                throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
+                throw MishapNoBoundStorage(ctx.caster?.position() ?: ctx.mishapSprayPos(), "storage_unloaded")
 
             return Triple(
                 EntityTargetSpell(target, item),
@@ -61,7 +63,7 @@ object OpUseMoteOn : VarargSpellAction {
 
             val storage = item.itemIndex.storage
             if (!MediafiedItemManager.isStorageLoaded(storage))
-                throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
+                throw MishapNoBoundStorage(ctx.caster?.position() ?: ctx.mishapSprayPos(), "storage_unloaded")
 
             return Triple(
                 BlockTargetSpell(target, direction, item),
@@ -80,13 +82,14 @@ object OpUseMoteOn : VarargSpellAction {
             itemStack.tag = item.tag
 
             // Swap item in hand to the new stack
-            val oldStack = ctx.caster.getItemInHand(ctx.castingHand)
-            ctx.caster.setItemInHand(ctx.castingHand, itemStack)
+            val caster = ctx.caster ?: FakePlayerFactory.getMinecraft(ctx.world)
+            val oldStack = caster.getItemInHand(ctx.castingHand)
+            caster.setItemInHand(ctx.castingHand, itemStack)
 
-            entity.interact(ctx.caster, InteractionHand.MAIN_HAND)
+            entity.interact(caster, InteractionHand.MAIN_HAND)
 
             // Swap back to the old item
-            ctx.caster.setItemInHand(ctx.castingHand, oldStack)
+            caster.setItemInHand(ctx.castingHand, oldStack)
 
             item.tag = itemStack.tag
             if (itemStack.isEmpty)

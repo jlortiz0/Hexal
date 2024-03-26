@@ -20,7 +20,7 @@ object OpGetContainedMotes : ConstMediaAction {
 
         val storage = (ctx as IMixinCastingEnvironment).boundStorage ?: return null.asActionResult
         if (!MediafiedItemManager.isStorageLoaded(storage))
-            throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
+            throw MishapNoBoundStorage(ctx.caster?.position() ?: ctx.mishapSprayPos(), "storage_unloaded")
 
         val results = item.map({itemIota ->
             itemIota.record?.let { MediafiedItemManager.getItemRecordsMatching(storage, it) }

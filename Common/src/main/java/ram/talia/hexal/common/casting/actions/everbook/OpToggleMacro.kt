@@ -9,10 +9,6 @@ import ram.talia.hexal.xplat.IXplatAbstractions
 object OpToggleMacro : ConstMediaAction {
 	override val argc = 1
 
-	override val isGreat = true
-	override val alwaysProcessGreatSpell = false
-	override val causesBlindDiversion = false
-
 	override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
 		val key = args.getPattern(0, argc)
 

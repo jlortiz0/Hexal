@@ -1,7 +1,7 @@
 package ram.talia.hexal.common.network
 
 import at.petrak.hexcasting.api.casting.math.HexPattern
-import at.petrak.hexcasting.common.network.IMessage
+import at.petrak.hexcasting.common.msgs.IMessage
 import io.netty.buffer.ByteBuf
 import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf

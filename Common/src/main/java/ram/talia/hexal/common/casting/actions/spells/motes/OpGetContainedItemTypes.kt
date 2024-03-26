@@ -17,7 +17,7 @@ object OpGetContainedItemTypes : ConstMediaAction {
     override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
         val storage = (ctx as IMixinCastingEnvironment).boundStorage ?: return null.asActionResult
         if (!MediafiedItemManager.isStorageLoaded(storage))
-            throw MishapNoBoundStorage(ctx.caster.position(), "storage_unloaded")
+            throw MishapNoBoundStorage(ctx.caster?.position() ?: ctx.mishapSprayPos(), "storage_unloaded")
 
         return MediafiedItemManager.getAllContainedItemTypes(storage)?.toList()?.asActionResult ?: null.asActionResult
     }

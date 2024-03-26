@@ -5,6 +5,7 @@ import net.minecraftforge.data.event.GatherDataEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.common.lib.HexalSounds
+import ram.talia.hexal.datagen.HexalActionTagProvider
 import ram.talia.hexal.datagen.HexalBlockTagProvider
 import ram.talia.hexal.datagen.HexalLootTables
 import ram.talia.hexal.datagen.recipes.HexalplatRecipes
@@ -28,6 +29,7 @@ class HexalForgeDataGenerators {
 			val gen = ev.generator
 //			val efh = ev.existingFileHelper
 			gen.addProvider(ev.includeClient(), HexalSounds.provider(gen))
+			gen.addProvider(ev.includeClient(), HexalActionTagProvider(gen))
 //			gen.addProvider(ev.includeClient(), HexItemModels(gen, efh))
 //			gen.addProvider(ev.includeClient(), HexBlockStatesAndModels(gen, efh))
 //			gen.addProvider(ev.includeServer(), PaucalForgeDatagenWrappers.addEFHToAdvancements(HexAdvancements(gen), efh))
