@@ -29,7 +29,8 @@ class HexalForgeDataGenerators {
 			val gen = ev.generator
 //			val efh = ev.existingFileHelper
 			gen.addProvider(ev.includeClient(), HexalSounds.provider(gen))
-			gen.addProvider(ev.includeClient(), HexalActionTagProvider(gen))
+			// FIXME internal forge bug? write file manually for now
+			// gen.addProvider(ev.includeClient(), HexalActionTagProvider(gen))
 //			gen.addProvider(ev.includeClient(), HexItemModels(gen, efh))
 //			gen.addProvider(ev.includeClient(), HexBlockStatesAndModels(gen, efh))
 //			gen.addProvider(ev.includeServer(), PaucalForgeDatagenWrappers.addEFHToAdvancements(HexAdvancements(gen), efh))

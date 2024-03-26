@@ -1,0 +1,9 @@
+{
+  "values": [
+    "hexal:everbook/delete",
+    "hexal:everbook/read",
+    "hexal:everbook/write",
+    "hexal:everbook/toggle_macro",
+    "hexal:wisp/consume"
+  ]
+}
