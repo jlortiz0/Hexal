@@ -1,12 +1,14 @@
 package ram.talia.hexal.common.casting.actions.spells.wisp
 
-import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.ParticleSpray
+import at.petrak.hexcasting.api.casting.RenderedSpell
 import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.getPositiveDouble
 import at.petrak.hexcasting.api.casting.iota.Iota
 import ram.talia.hexal.api.config.HexalConfig
-import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment
 import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
+import ram.talia.hexal.api.util.WispCastingEnvironment
 import ram.talia.hexal.common.entities.TickingWisp
 import kotlin.math.ln
 import kotlin.math.min
@@ -19,9 +21,9 @@ object OpMoveSpeedSet : SpellAction {
         val newMax = args.getPositiveDouble(0, OpMoveTargetSet.argc)
         val newMult = newMax / TickingWisp.BASE_MAX_SPEED_PER_TICK
 
-        val mCast = ctx as? IMixinCastingEnvironment
+        val mCast = ctx as? WispCastingEnvironment
 
-        if (mCast == null || !mCast.hasWisp() || mCast.wisp !is TickingWisp)
+        if (mCast == null || mCast.wisp !is TickingWisp)
             throw MishapNoWisp()
 
         val tWisp = mCast.wisp as TickingWisp

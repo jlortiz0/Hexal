@@ -4,9 +4,9 @@ import at.petrak.hexcasting.api.casting.castables.ConstMediaAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
 import at.petrak.hexcasting.api.casting.iota.Iota
 import ram.talia.hexal.api.HexalAPI
-import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment
 import ram.talia.hexal.api.spell.casting.triggers.WispTriggerRegistry
 import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
+import ram.talia.hexal.api.util.WispCastingEnvironment
 
 /**
  * Accepts a [WispTriggerRegistry.WispTriggerType] for an [ram.talia.hexal.api.spell.casting.triggers.IWispTrigger], a wisp executing the spell will create a trigger of
@@ -17,10 +17,7 @@ class OpWispSetTrigger(private val triggerType: WispTriggerRegistry.WispTriggerT
 
 	override fun execute(args: List<Iota>, ctx: CastingEnvironment): List<Iota> {
 		@Suppress("CAST_NEVER_SUCCEEDS")
-		val mCast = ctx as? IMixinCastingEnvironment
-
-		if (mCast == null || mCast.wisp == null)
-			throw MishapNoWisp()
+		val mCast = ctx as? WispCastingEnvironment ?: throw MishapNoWisp()
 
 		HexalAPI.LOGGER.debug("Setting ${mCast.wisp} trigger to $triggerType")
 

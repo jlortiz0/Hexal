@@ -1,13 +1,14 @@
 package ram.talia.hexal.common.casting.actions.spells.link
 
-import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.RenderedSpell
 import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.getPositiveIntUnder
 import at.petrak.hexcasting.api.casting.iota.Iota
 import ram.talia.hexal.api.linkable.ILinkable
-import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment
 import ram.talia.hexal.api.spell.mishaps.MishapNoLinked
 import ram.talia.hexal.api.spell.mishaps.MishapNoWisp
+import ram.talia.hexal.api.util.WispCastingEnvironment
 import ram.talia.hexal.common.entities.BaseCastingWisp
 
 class OpTransferAllowed(val setAllowed: Boolean) : SpellAction {
@@ -15,7 +16,7 @@ class OpTransferAllowed(val setAllowed: Boolean) : SpellAction {
 
     @Suppress("CAST_NEVER_SUCCEEDS")
     override fun execute(args: List<Iota>, ctx: CastingEnvironment): SpellAction.Result {
-        val mCast = ctx as? IMixinCastingEnvironment
+        val mCast = ctx as? WispCastingEnvironment
         val wispThis = mCast?.wisp ?: throw MishapNoWisp()
 
         val otherIndex = args.getPositiveIntUnder(0, OpSendIota.argc, wispThis.numLinked())

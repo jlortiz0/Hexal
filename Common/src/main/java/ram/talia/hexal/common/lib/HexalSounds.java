@@ -41,7 +41,7 @@ public class HexalSounds {
 	private static final Map<ResourceLocation, SoundEntry> SOUNDS = new LinkedHashMap<>();
 	
 	public static final SoundEntry WISP_CASTING_START = create("wisp_casting_start").subtitle("Wisp starts casting")
-					.playExisting(HexSounds.ACTUALLY_CAST, 0.5f, 1)
+					.playExisting(HexSounds.CAST_SPELL, 0.5f, 1)
 					.category(SoundSource.PLAYERS)
 					.attenuationDistance(8)
 					.build();

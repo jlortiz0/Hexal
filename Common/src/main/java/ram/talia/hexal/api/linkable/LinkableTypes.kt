@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.Level
 import ram.talia.hexal.api.HexalAPI.modLoc
-import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment
+import ram.talia.hexal.api.util.WispCastingEnvironment
 import ram.talia.hexal.common.blocks.entity.BlockEntityRelay
 import ram.talia.hexal.common.entities.LinkableEntity
 import ram.talia.hexal.xplat.IXplatAbstractions
@@ -32,7 +32,7 @@ object LinkableTypes {
 		override val canCast = true
 		@Suppress("CAST_NEVER_SUCCEEDS")
 		override fun linkableFromCastingEnvironment(ctx: CastingEnvironment): LinkableEntity? {
-			val mCast = ctx as? IMixinCastingEnvironment
+			val mCast = ctx as? WispCastingEnvironment
 			return mCast?.wisp
 		}
 		override val CastingEnvironmentPriority = 0

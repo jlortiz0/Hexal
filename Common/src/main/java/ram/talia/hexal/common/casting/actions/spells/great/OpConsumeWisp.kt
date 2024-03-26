@@ -1,8 +1,10 @@
 package ram.talia.hexal.common.casting.actions.spells.great
 
-import at.petrak.hexcasting.api.casting.*
+import at.petrak.hexcasting.api.casting.ParticleSpray
+import at.petrak.hexcasting.api.casting.RenderedSpell
 import at.petrak.hexcasting.api.casting.castables.SpellAction
 import at.petrak.hexcasting.api.casting.eval.CastingEnvironment
+import at.petrak.hexcasting.api.casting.getEntity
 import at.petrak.hexcasting.api.casting.iota.Iota
 import at.petrak.hexcasting.api.casting.mishaps.MishapInvalidIota
 import com.mojang.datafixers.util.Either
@@ -10,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.config.HexalConfig
 import ram.talia.hexal.api.spell.casting.IMixinCastingEnvironment
+import ram.talia.hexal.api.util.WispCastingEnvironment
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import ram.talia.hexal.common.entities.IMediaEntity
 import kotlin.math.ln
@@ -23,9 +26,9 @@ object OpConsumeWisp : SpellAction {
 
 		ctx.assertEntityInRange(consumed.get())
 
-		val mCast = ctx as? IMixinCastingEnvironment
+		val mCast = ctx as? WispCastingEnvironment
 
-		val consumer: Either<BaseCastingWisp, ServerPlayer> = if (mCast != null && mCast.wisp != null) Either.left(mCast.wisp) else Either.right(ctx.caster)
+		val consumer: Either<BaseCastingWisp, ServerPlayer> = if (mCast != null) Either.left(mCast.wisp) else Either.right(ctx.caster)
 
 		HexalAPI.LOGGER.debug("consumer: {}, {}", consumer, consumed.fightConsume(consumer))
 
@@ -50,8 +53,8 @@ object OpConsumeWisp : SpellAction {
 
 			val mCast = ctx as? IMixinCastingEnvironment
 
-			if (mCast != null && mCast.wisp != null)
-				mCast.wisp!!.addMedia(19 * consumed.media / 20) // using addMedia to prevent overflow.
+			if (mCast is WispCastingEnvironment)
+				(mCast as WispCastingEnvironment).wisp.addMedia(19 * consumed.media / 20) // using addMedia to prevent overflow.
 			else if (mCast != null)
 				mCast.consumedMedia += 19 * consumed.media / 20
 

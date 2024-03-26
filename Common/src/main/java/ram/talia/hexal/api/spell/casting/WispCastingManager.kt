@@ -1,7 +1,6 @@
 package ram.talia.hexal.api.spell.casting
 
 import at.petrak.hexcasting.api.HexAPI
-import at.petrak.hexcasting.api.casting.eval.env.PackagedItemCastEnv
 import at.petrak.hexcasting.api.casting.eval.vm.CastingImage
 import at.petrak.hexcasting.api.casting.eval.vm.CastingVM
 import at.petrak.hexcasting.api.casting.iota.Iota
@@ -15,10 +14,10 @@ import net.minecraft.nbt.ListTag
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.InteractionHand
 import ram.talia.hexal.api.HexalAPI
 import ram.talia.hexal.api.nbt.SerialisedIota
 import ram.talia.hexal.api.nbt.SerialisedIotaList
+import ram.talia.hexal.api.util.WispCastingEnvironment
 import ram.talia.hexal.common.entities.BaseCastingWisp
 import java.util.*
 
@@ -120,17 +119,9 @@ class WispCastingManager(private val casterUUID: UUID, private var cachedServer:
 	 */
 	@Suppress("CAST_NEVER_SUCCEEDS")
 	fun cast(cast: WispCast): WispCastResult {
-		val ctx = PackagedItemCastEnv(
-			caster!!,
-			InteractionHand.MAIN_HAND
-		)
-
 		val wisp = cast.wisp!!
+		val ctx = WispCastingEnvironment(wisp)
 		wisp.summonedChildThisCast = false // restricts the wisp to only summoning one other wisp per cast.
-
-		// IntelliJ is complaining that ctx will never be an instance of IMixinCastingEnvironment cause it doesn't know about mixin, but we know better
-		val mCast = ctx as? IMixinCastingEnvironment
-		mCast?.wisp = wisp
 
 		val ravenmind = CompoundTag()
 		ravenmind.put(HexAPI.RAVENMIND_USERDATA, IotaType.serialize(cast.initialRavenmind.getIota(ctx.world)))
